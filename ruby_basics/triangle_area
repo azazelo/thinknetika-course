@@ -1,9 +1,0 @@
-# The area of a triangle
-
-puts "Type triangle's base length"
-base = gets.chomp
-puts "Type triangle's height length"
-height = gets.chomp
-
-area = base * height / 2
-puts area.to_s
