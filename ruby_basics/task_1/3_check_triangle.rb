@@ -1,4 +1,4 @@
-# triangle_90
+# Check triangle
 
 puts "Type lengths or 1st, 2nd and 3rd sides of triangle comma separated, for example: 3,4,5"
 sides = gets.chomp.split(',').map(&:chomp).map(&:to_f)
