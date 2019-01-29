@@ -10,13 +10,13 @@ case true
 when d > 0
   x1 = (-b + Math.sqrt(d)) / (2 * a)
   x2 = (-b - Math.sqrt(d)) / (2 * a)
-  puts "Discriminant: #{d.to_s}"
-  puts "x1 = #{x1.to_s}"
-  puts "x2 = #{x2.to_s}"
+  puts "Discriminant: #{d}"
+  puts "x1 = #{x1}"
+  puts "x2 = #{x2}"
 when d == 0
   x1 = x2 = -b / (2 * a)
-  puts "Discriminant: #{d.to_s}"
-  puts "x1 = x2 = #{x1.to_s}"
+  puts "Discriminant: #{d}"
+  puts "x1 = x2 = #{x1}"
 when d < 0
   puts "There is no roots!"
 end

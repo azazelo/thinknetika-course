@@ -10,5 +10,5 @@ ideal_weight = height.to_i - 110
 if ideal_weight < 0
   puts "Hello, #{name}, your have ideal weight!"
 else
-  puts "Hello, #{name}, your ideal weight is #{ideal_weight.to_s}."
+  puts "Hello, #{name}, your ideal weight is #{ideal_weight}."
 end
