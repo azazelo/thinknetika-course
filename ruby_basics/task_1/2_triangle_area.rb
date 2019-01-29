@@ -5,5 +5,5 @@ base = gets.chomp.to_f
 puts "Type triangle's height length"
 height = gets.chomp.to_f
 
-area = base * height / 2
+area = base * height / 2.0
 puts "Area of triangle is #{area}."
