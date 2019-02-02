@@ -1,4 +1,6 @@
-# 2.1. —делать хеш, содеращий мес€цы и количество дней в мес€це. ¬ цикле выводить те мес€цы, у которых количество дней ровно 30
+# 2.1. Craeat hash with months and qty days in months.
+# in loop print months with days == 30
+
 months = {
   January: 31,
   February: 28,

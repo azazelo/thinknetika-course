@@ -1,4 +1,4 @@
-# 2.3. Заполнить массив числами фибоначчи до 100
+# 2.3. make array with fifonacci digits up to 100
 
 fibs = [0,1,1]
 

@@ -1,4 +1,4 @@
-# 2.4. Заполнить хеш гласными буквами, где значением будет являтся порядковый номер буквы в алфавите (a - 1).
+# 2.4. make hash with vowels key - letter, value - number of letter in alfabet (a - 1)
 
 vowels = %W()
 
