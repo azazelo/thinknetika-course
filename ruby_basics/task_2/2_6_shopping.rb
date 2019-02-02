@@ -10,7 +10,6 @@ class Cart
     @basket[name] ||= {}
     @basket[name][price] ||= 0
     @basket[name][price] = @basket[name][price] + qty
-    puts @basket
   end
 
   def display_cart
