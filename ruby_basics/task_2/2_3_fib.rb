@@ -2,9 +2,7 @@
 
 fibs = [0,1,1]
 
-loop do
-  next_fib = fibs[-2] + fibs.last
-  break if next_fib > 100
+while (next_fib = fibs[-2] + fibs.last) < 100 do
   fibs << next_fib
 end
 

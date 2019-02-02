@@ -1,21 +1,26 @@
 # 6. Shopping program
 
 class Cart
-  def initialize(amount=0)
+  def initialize(amount = 0)
     @basket = {}
     @total = 0
   end
 
   def add_product(name, price, qty)
-    @basket[name] = {price => ((@basket[name][price] rescue 0) + qty)}
+    @basket[name] ||= {}
+    @basket[name][price] ||= 0
+    @basket[name][price] = @basket[name][price] + qty
+    puts @basket
   end
 
   def display_cart
     puts "Cart:"
     puts "  In a glance: #{@basket}"
-    @basket.each do |name, price_qty|
-      price_qty_arr = price_qty.to_a.flatten
-      product_amount = price_qty_arr[0] * price_qty_arr[1]
+    @basket.each do |name, prices_qtys|
+      product_amount = 0
+      prices_qtys.each do |price, qty|
+        product_amount += price * qty
+      end
       puts "  Product: #{name}, amount: #{product_amount}"
       @total += product_amount
     end
