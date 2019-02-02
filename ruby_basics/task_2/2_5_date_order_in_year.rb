@@ -8,7 +8,7 @@ is_year_leap = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
 qty_days = [31, (is_year_leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 sum_days = 0
-qty_days.take(month-1).each { |qty|  += qty }
+qty_days.take(month - 1).each { |qty|  += qty }
 
 puts "You have typed:"
 puts "  day: #{day}"
