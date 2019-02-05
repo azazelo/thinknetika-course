@@ -53,6 +53,7 @@ class Train
   def go_backward
     return "There is NO route. Add route first." unless self.route
     if self.previous_station
+      return "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
       self.current_station.dispatch_train(self)
       return @current_station = self.previous_station.receive_train(self)
     else
@@ -62,7 +63,7 @@ class Train
   end
 
   def get_station(position)
-    return puts "There is NO route. Add route first." unless self.route
+    return "There is NO route. Add route first." unless self.route
     case position
     when 'next'
       return self.next_station if self.next_station
@@ -80,7 +81,7 @@ class Train
   end
 
   def previous_station
-    return nil if self.current_position == 0
+    return nil if self.current_position.zero?
     route.stations[self.current_position - 1]
   end
 
