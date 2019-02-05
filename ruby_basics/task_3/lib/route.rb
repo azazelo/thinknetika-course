@@ -21,8 +21,4 @@ class Route
   def stations_info
     @stations.map.with_index { |s, i| "#{i+1}. #{s.info}"  }
   end
-
-  def message(str)
-    str
-  end
 end
