@@ -1,9 +1,9 @@
 require_relative "route"
 require_relative "station"
-require_relative "message"
+require_relative "messages"
 
 class Train
-  include Message
+  include Messages::Train
 
   attr_accessor :speed, :route, :wagon_qty, :current_station
   attr_reader :current_position, :number, :type

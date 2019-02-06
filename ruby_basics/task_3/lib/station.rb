@@ -1,4 +1,7 @@
+require_relative "messages"
+
 class Station
+  include Messages::Station
   attr_reader :name, :trains
 
   def initialize(name)
@@ -7,14 +10,14 @@ class Station
   end
 
   def receive_train(train)
-    return "This train already on station." if @trains.include?(train)
+    return train_already_on_station if @trains.include?(train)
     @trains << train
     puts "#{train.info} ARRIVED to station #{self.info}"
     self
   end
 
   def dispatch_train(train)
-    return "No such train on station." unless @trains.include?(train)
+    return no_such_train_on_station unless @trains.include?(train)
     @trains.delete(train)
     puts "#{train.info} DEPARTED from station #{self.info}"
     self

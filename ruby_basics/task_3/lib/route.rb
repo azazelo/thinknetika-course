@@ -1,4 +1,7 @@
+require_relative "messages"
+
 class Route
+  include Messages::Route
   attr_reader :stations
 
   def initialize(first_station, last_station)
@@ -11,9 +14,9 @@ class Route
   end
 
   def delete_station(station)
-    return "No such station" unless @stations.include?(station)
-    return "Can NOT delete first station" if @stations.first == station
-    return "Can NOT delete last station" if  @stations.last == station
+    return no_such_station unless @stations.include?(station)
+    return can_no_delete_first_station if @stations.first == station
+    return can_no_delete_last_station if  @stations.last == station
     @stations.delete(station)
     self
   end

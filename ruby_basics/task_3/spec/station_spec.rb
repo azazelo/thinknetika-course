@@ -1,4 +1,6 @@
 require 'station'
+require 'messages'
+include Messages::Train
 
 describe Station do
   before(:each) do

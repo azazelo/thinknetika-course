@@ -1,6 +1,6 @@
 require 'train'
-require 'message'
-include Message
+require 'messages'
+include Messages::Train
 
 describe Train do
   before(:each) do
