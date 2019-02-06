@@ -2,8 +2,8 @@ require_relative "route"
 require_relative "station"
 
 class Train
-  attr_accessor :speed, :route, :wagon_qty
-  attr_reader :current_position, :current_station, :number, :type
+  attr_accessor :speed, :route, :wagon_qty, :current_station
+  attr_reader :current_position, :number, :type
 
   def initialize(number, type, wagon_qty)
     @number = number
@@ -39,26 +39,20 @@ class Train
 
   def go_forward
     return "There is NO route. Add route first." unless self.route
-    if self.next_station
-      return puts "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
-      self.current_station.dispatch_train(self)
-      return @current_station = self.next_station.receive_train(self)
-    else
-      message_at_last_station
-    end
+    return message_at_last_station unless self.next_station
+    return puts "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
+    self.current_station.dispatch_train(self)
+    @current_station = self.next_station.receive_train(self)
     self
   end
 
 
   def go_backward
     return "There is NO route. Add route first." unless self.route
-    if self.previous_station
-      return "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
-      self.current_station.dispatch_train(self)
-      return @current_station = self.previous_station.receive_train(self)
-    else
-      message_at_first_station
-    end
+    return message_at_first_station unless self.previous_station
+    return "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
+    self.current_station.dispatch_train(self)
+    @current_station = self.previous_station.receive_train(self)
     self
   end
 

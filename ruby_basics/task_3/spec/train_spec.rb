@@ -68,14 +68,16 @@ describe Train do
     expect(@train.current_station).to eq(@station_b)
   end
 
-  it "can NOT move forward" do
+  it "can NOT move forward on last station" do
     @train.increase_speed(10)
+    @train.current_station = @station_c
     @train.go_forward
-    expect(@train.current_station).to eq(@station_b)
+    expect(@train.current_station).to eq(@station_c)
   end
 
-  it "can move backward" do
+  it "can move backward on first station" do
     @train.increase_speed(10)
+    @train.current_station = @station_a
     @train.go_backward
     expect(@train.current_station).to eq(@station_a)
   end
