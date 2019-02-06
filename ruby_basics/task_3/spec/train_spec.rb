@@ -99,4 +99,28 @@ describe Train do
     expect(@train.get_station('next')).to     eq(@station_c)
   end
 
+  it "can get next_station" do
+    expect(@train.get_station("next")).to eq(@station_b)
+  end
+
+  it "can NOT get next_station if on last station" do
+    @train.current_station = @station_c
+    expect(@train.get_station("next")).to eq(no_next_station)
+  end
+
+  it "can get previous_station" do
+    @train.current_station = @station_c
+    expect(@train.get_station("previous")).to eq(@station_b)
+  end
+
+
+  it "can NOT get previous_station if on first station" do
+    @train.current_station = @station_a
+    expect(@train.get_station("previous")).to eq(no_previous_station)
+  end
+
+  it "can get current_station" do
+    @train.current_station = @station_c
+    expect(@train.get_station("current")).to eq(@station_c)
+  end
 end

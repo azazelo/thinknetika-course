@@ -30,7 +30,7 @@ class Station
   end
 
   def train_list(trains)
-    trains.map.with_index { |t, i| "#{i+1}. #{t.info}" }
+    trains.map.with_index(1) { |t, i| "#{i}. #{t.info}" }
   end
 
   def train_list_by_type(train_type)

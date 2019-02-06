@@ -22,6 +22,6 @@ class Route
   end
 
   def stations_info
-    @stations.map.with_index { |s, i| "#{i+1}. #{s.info}"  }
+    @stations.map.with_index(1) { |s, i| "#{i}. #{s.info}"  }
   end
 end

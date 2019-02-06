@@ -78,12 +78,12 @@ class Train
   end
 
   def previous_station
-    return nil if self.current_position.zero?
+    return if self.current_position.zero?
     route.stations[self.current_position - 1]
   end
 
   def next_station
-    return nil if self.current_position == self.route.stations.size - 1
+    return if self.current_position == self.route.stations.size - 1
     route.stations[self.current_position + 1]
   end
 
