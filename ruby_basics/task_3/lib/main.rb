@@ -25,7 +25,7 @@ puts train_2.info
 puts "Station #{station_a.info} receives a #{train_1.info}"
 station_a.receive_train(train_1)
 puts "#{station_a.inspect}"
-puts station_a.display_trains([train_1])
+puts station_a.train_list([train_1])
 
 
 puts "#{train_1.info} receive route"

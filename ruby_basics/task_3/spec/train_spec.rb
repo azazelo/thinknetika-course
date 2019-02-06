@@ -1,4 +1,6 @@
 require 'train'
+require 'message'
+include Message
 
 describe Train do
   before(:each) do
@@ -39,15 +41,16 @@ describe Train do
     expect(@train.wagon_qty).to eq(11)
   end
 
-  it "can not add wagon if speed == 0" do
-    @train.stop
-    @train.add_wagon
-    expect(@train.wagon_qty).to eq(11)
+  it "can not add wagon if speed != 0" do
+    @train.increase_speed(10)
+    expect(@train.add_wagon).to eq(can_not_add_wagon)
+    expect(@train.wagon_qty).to eq(10)
+
   end
 
   it "can remove wagon if speed > 0" do
     @train.increase_speed(10)
-    @train.remove_wagon
+    expect(@train.remove_wagon).to eq(can_not_remove_wagon)
     expect(@train.wagon_qty).to eq(10)
   end
 

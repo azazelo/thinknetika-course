@@ -1,7 +1,10 @@
 require_relative "route"
 require_relative "station"
+require_relative "message"
 
 class Train
+  include Message
+
   attr_accessor :speed, :route, :wagon_qty, :current_station
   attr_reader :current_position, :number, :type
 
@@ -23,12 +26,12 @@ class Train
   end
 
   def add_wagon
-    return message_can_not_add_wagon unless self.speed.zero?
+    return can_not_add_wagon unless self.speed.zero?
     self.wagon_qty += 1
   end
 
   def remove_wagon
-    return message_can_not_remove_wagon unless self.speed.zero?
+    return can_not_remove_wagon unless self.speed.zero?
     self.wagon_qty -= 1
   end
 
@@ -38,9 +41,9 @@ class Train
   end
 
   def go_forward
-    return "There is NO route. Add route first." unless self.route
-    return message_at_last_station unless self.next_station
-    return puts "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
+    return there_is_no_route + add_route unless self.route
+    return at_last_station unless self.next_station
+    return speed_is_zero if self.speed.zero?
     self.current_station.dispatch_train(self)
     @current_station = self.next_station.receive_train(self)
     self
@@ -48,23 +51,23 @@ class Train
 
 
   def go_backward
-    return "There is NO route. Add route first." unless self.route
-    return message_at_first_station unless self.previous_station
-    return "Speed is zero. Can not go forward. Increase speed." if self.speed.zero?
+    return there_is_no_route + add_route unless self.route
+    return at_first_station unless self.previous_station
+    return speed_is_zero if self.speed.zero?
     self.current_station.dispatch_train(self)
     @current_station = self.previous_station.receive_train(self)
     self
   end
 
   def get_station(position)
-    return "There is NO route. Add route first." unless self.route
+    return there_is_no_route + add_route unless self.route
     case position
     when 'next'
       return self.next_station if self.next_station
-      message_no_next_station
+      no_next_station
     when 'previous'
       return self.previous_station if self.previous_station
-      message_no_previous_station
+      no_previous_station
     when 'current'
       self.current_station
     end
@@ -87,29 +90,4 @@ class Train
   def current_position
     route.stations.index(self.current_station)
   end
-
-  def message_can_add_remove_wagon
-    "Can not add wagon if train moving. Speed is #{self.speed}. Stop train first."
-  end
-
-  def message_can_not_remove_wagon
-    "Can not remove wagon if train moving. Speed is #{self.speed}. Stop train first."
-  end
-
-  def message_no_next_station
-    "There is NO next station!"
-  end
-
-  def message_no_previous_station
-    "There is NO previous station!"
-  end
-
-  def message_at_first_station
-    "Can not go backward: At FIRST station!"
-  end
-
-  def message_at_last_station
-    "Can not go forward: At LAST station!"
-  end
-
 end
