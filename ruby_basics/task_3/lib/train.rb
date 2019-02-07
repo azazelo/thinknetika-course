@@ -63,11 +63,9 @@ class Train
     return there_is_no_route + add_route unless self.route
     case position
     when 'next'
-      return self.next_station if self.next_station
-      no_next_station
+      self.next_station ? self.next_station : no_next_station
     when 'previous'
-      return self.previous_station if self.previous_station
-      no_previous_station
+      self.previous_station ? self.previous_station : no_previous_station
     when 'current'
       self.current_station
     end

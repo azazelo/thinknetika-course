@@ -6,10 +6,11 @@ describe Route do
     @station_b = Station.new("B")
     @station_c = Station.new("C")
 
-    @route = Route.new(@station_a, @station_c)
+    @route = Route.new("1", @station_a, @station_c)
   end
 
-  it "should be created with first and last stations" do
+  it "should be created with name, first stations and last station" do
+    expect(@route.name).to eq("1")
     expect(@route.stations.first).to eq(@station_a)
     expect(@route.stations.last).to eq(@station_c)
   end

@@ -2,9 +2,11 @@ require_relative "messages"
 
 class Route
   include Messages::Route
+  attr_accessor :name
   attr_reader :stations
 
-  def initialize(first_station, last_station)
+  def initialize(name, first_station, last_station)
+    @name = name
     @stations = [first_station, last_station]
   end
 
@@ -22,6 +24,10 @@ class Route
   end
 
   def stations_info
+    @stations.map.with_index(1) { |s, i| "#{i}. #{s.info}"  }
+  end
+
+  def info
     @stations.map.with_index(1) { |s, i| "#{i}. #{s.info}"  }
   end
 end
