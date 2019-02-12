@@ -1,17 +1,27 @@
 require 'train'
+require 'passenger_train'
+
+require 'passenger_wagon'
+require 'cargo_wagon'
+require 'types'
 require 'messages'
 include Messages::Train
 
 describe Train do
   before(:each) do
-    @train = Train.new('001', "Passenger", 10)
+    @train = PassengerTrain.new('001')
     @station_a = Station.new("A")
     @station_b = Station.new("B")
     @station_c = Station.new("C")
+    @type_cargo = Types::CARGO
+    @type_passenger = Types::PASSENGER
 
-    @route = Route.new(@station_a, @station_c)
+    @route = Route.new("A-C", @station_a, @station_c)
     @route.add_station(@station_b)
     @train.accept(@route)
+
+    @passenger_wagon = PassengerWagon.new('001')
+    @cargo_wagon = CargoWagon.new('002')
   end
 
   it "should be created with numbers '001'" do
@@ -19,7 +29,7 @@ describe Train do
   end
 
   it "should be created with types 'Passenger'" do
-    expect(@train.type).to eq('Passenger')
+    expect(@train.type).to eq(@type_passenger)
   end
 
   it "can increase speed and display current speed" do
@@ -32,32 +42,25 @@ describe Train do
     expect(@train.speed).to eq(0)
   end
 
-  it "can display wagon qty" do
-    expect(@train.wagon_qty).to eq(10)
-  end
-
-  it "can add wagon if speed > 0" do
-    @train.add_wagon
-    expect(@train.wagon_qty).to eq(11)
+  it "can add wagon if speed > 0 and wagon_type same as train_type" do
+    @train.add_wagon(@passenger_wagon)
+    expect(@train.wagons.size).to eq(1)
   end
 
   it "can not add wagon if speed != 0" do
     @train.increase_speed(10)
-    expect(@train.add_wagon).to eq(can_not_add_wagon)
-    expect(@train.wagon_qty).to eq(10)
-
+    expect(@train.add_wagon(@passenger_wagon)).to eq(can_not_add_wagon + speed_is_not_zero)
   end
 
   it "can remove wagon if speed > 0" do
     @train.increase_speed(10)
-    expect(@train.remove_wagon).to eq(can_not_remove_wagon)
-    expect(@train.wagon_qty).to eq(10)
+    expect(@train.remove_wagon('001')).to eq(can_not_remove_wagon + speed_is_not_zero)
   end
 
   it "can not remove wagon if speed == 0" do
     @train.stop
-    @train.remove_wagon
-    expect(@train.wagon_qty).to eq(9)
+    @train.remove_wagon('001')
+    expect(@train.wagons.size).to eq(0)
   end
 
   it "can accept route, current_station to be equal first station of route" do

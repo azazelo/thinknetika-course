@@ -40,6 +40,6 @@ class Station
   end
 
   def info
-    "Station #{self.name}."
+    "ст.#{self.name}"
   end
 end

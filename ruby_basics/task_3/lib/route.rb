@@ -17,8 +17,8 @@ class Route
 
   def delete_station(station)
     return no_such_station unless @stations.include?(station)
-    return can_no_delete_first_station if @stations.first == station
-    return can_no_delete_last_station if  @stations.last == station
+    return can_not_delete_first_station if @stations.first == station
+    return can_not_delete_last_station if  @stations.last == station
     @stations.delete(station)
     self
   end
@@ -28,6 +28,6 @@ class Route
   end
 
   def info
-    @stations.map.with_index(1) { |s, i| "#{i}. #{s.info}"  }
+    "#{self.name}: " + @stations.map.with_index(1) { |s, i| "#{i}. #{s.info}"  }.join(" -> ")
   end
 end

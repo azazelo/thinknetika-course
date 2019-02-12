@@ -1,4 +1,7 @@
 require 'route'
+require 'station'
+require 'messages'
+include Messages::Route
 
 describe Route do
   before(:each) do
@@ -27,15 +30,15 @@ describe Route do
   end
 
   it "can not delete station if it not exist in list" do
-    expect(@route.delete_station(@station_d)).to eq('No such station')
+    expect(@route.delete_station(@station_d)).to include(no_such_station)
   end
 
-  it "can not delete first station" do
-    expect(@route.delete_station(@station_a)).to eq('Can NOT delete first station')
+  it can_not_delete_first_station do
+    expect(@route.delete_station(@station_a)).to include(can_not_delete_first_station)
   end
 
   it "can not delete last station" do
-    expect(@route.delete_station(@station_c)).to eq('Can NOT delete last station')
+    expect(@route.delete_station(@station_c)).to include(can_not_delete_last_station)
   end
 
   it "can display stations" do

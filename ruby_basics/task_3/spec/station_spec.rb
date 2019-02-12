@@ -1,3 +1,4 @@
+require 'cargo_train'
 require 'station'
 require 'messages'
 include Messages::Train
@@ -5,7 +6,8 @@ include Messages::Train
 describe Station do
   before(:each) do
     @station = Station.new("A")
-    @train = Train.new("001", "Cargo", 50)
+    @type_cargo = Types::CARGO
+    @train = CargoTrain.new("001")
     @station.receive_train(@train)
   end
 
@@ -27,7 +29,7 @@ describe Station do
   end
 
   it "can return train list by type" do
-    expect(@station.train_list_by_type("Cargo").join('. ')).to include("1.")
+    expect(@station.train_list_by_type(@type_cargo).join('. ')).to include("1.")
   end
 
 end

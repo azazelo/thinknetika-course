@@ -1,20 +1,21 @@
 require_relative "route"
 require_relative "station"
 require_relative "messages"
+require_relative "types"
 
 class Train
+  include Types
   include Messages::Train
 
-  attr_accessor :speed, :route, :wagon_qty, :current_station
-  attr_reader :current_position, :number, :type
+  attr_accessor :speed, :route, :current_station
+  attr_reader :current_position, :number, :type, :wagons
 
-  def initialize(number, type, wagon_qty)
+  def initialize(number)
     @number = number
-    @type = type
-    @wagon_qty = wagon_qty
     @speed = 0
     @route = nil
     @current_position = nil
+    @wagons = []
   end
 
   def increase_speed(num)
@@ -25,19 +26,27 @@ class Train
     self.speed = 0
   end
 
-  def add_wagon
-    return can_not_add_wagon unless self.speed.zero?
-    self.wagon_qty += 1
+  def add_wagon(wagon)
+    puts self.type
+    return can_not_add_wagon + wagon_already_added if @wagons.include?(wagon)
+    return can_not_add_wagon + wagon_has_incompatible_type unless self.type == wagon.type
+    return can_not_add_wagon + speed_is_not_zero unless self.speed.zero?
+    @wagons << wagon
+    self
   end
 
-  def remove_wagon
-    return can_not_remove_wagon unless self.speed.zero?
-    self.wagon_qty -= 1
+  def remove_wagon(wagon_number)
+    return can_not_remove_wagon + speed_is_not_zero unless self.speed.zero?
+    wagon = @wagons.select { |w| w.number == wagon_number }.first
+    return can_not_remove_wagon + wagon_not_in_list unless @wagons.include?(wagon)
+    @wagons.delete(wagon)
+    self
   end
 
   def accept(route)
     self.route = route
     @current_station = self.route.stations.first
+    self
   end
 
   def go_forward
@@ -72,7 +81,10 @@ class Train
   end
 
   def info
-    "Train (##{self.number}, type: '#{self.type}'', wagons: #{wagon_qty}, speed: #{speed})"
+    "Поезд ##{self.number}:
+      Тип: #{self.type}
+      Вагоны(#{@wagons.size}): #{@wagons.any? ? @wagons.map(&:info).join(', ') : "Вагонов нет. Только локомотив."}
+      Маршрут: #{self.route ? self.route.info : 'Пока не задан.'}"
   end
 
   def previous_station
