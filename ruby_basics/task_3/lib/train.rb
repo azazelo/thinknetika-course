@@ -27,7 +27,6 @@ class Train
   end
 
   def add_wagon(wagon)
-    puts self.type
     return can_not_add_wagon + wagon_already_added if @wagons.include?(wagon)
     return can_not_add_wagon + wagon_has_incompatible_type unless self.type == wagon.type
     return can_not_add_wagon + speed_is_not_zero unless self.speed.zero?
@@ -37,7 +36,7 @@ class Train
 
   def remove_wagon(wagon_number)
     return can_not_remove_wagon + speed_is_not_zero unless self.speed.zero?
-    wagon = @wagons.select { |w| w.number == wagon_number }.first
+    wagon = @wagons.detect { |w| w.number == wagon_number }
     return can_not_remove_wagon + wagon_not_in_list unless @wagons.include?(wagon)
     @wagons.delete(wagon)
     self
@@ -46,6 +45,7 @@ class Train
   def accept(route)
     self.route = route
     @current_station = self.route.stations.first
+    self.route.stations.first.receive_train(self)
     self
   end
 

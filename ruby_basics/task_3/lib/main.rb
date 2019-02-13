@@ -8,14 +8,4 @@ require_relative 'cargo_train'
 require_relative 'passenger_train'
 require_relative 'management'
 
-
-
-puts "
-===========================================
-|             Железная дорога             |
-|                                         |
-| Для вызова Главного меню введите <menu> |
-| в строке приглашения и нажите [Enter]   |
--------------------------------------------"
-
- menu
+menu

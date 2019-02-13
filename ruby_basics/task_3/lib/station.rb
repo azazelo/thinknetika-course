@@ -25,7 +25,7 @@ class Station
 
   def display
     puts self.info
-    puts 'trains on station:'
+    puts 'Поезда на станции станции:'
     puts train_list(@trains)
   end
 

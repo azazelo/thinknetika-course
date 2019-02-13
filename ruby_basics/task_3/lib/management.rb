@@ -11,10 +11,10 @@ def menu
   stations = []
   routes = []
   trains = []
-  # seed(stations, routes, trains)
+  seed(stations, routes, trains)
   loop do
     system('clear')
-    puts "------------ Главное меню ------------"
+    puts "============ Железная дорога =============="
     puts "1 - Создать станцию."
     puts "2 - Просмотр станций."
     puts "3 - Создать поезд."
@@ -28,8 +28,8 @@ def menu
     print ": "
 
     command = gets.strip
-    break if command == "0"
     case command
+    when "0" then break
     when "1" then (res = create_station(stations)).is_a?(String) ? (puts res; next) : (stations << res)
     when "2" then (res = show_stations(stations)).is_a?(String) ? (puts res) : res
     when "3" then (res = create_train).is_a?(String) ? (puts res) : (trains << res)
@@ -60,14 +60,14 @@ def create_train
 end
 
 def show_trains(trains)
-  puts trains.empty? ? "Еще не создано ни одного поезда." : options_for("Поезда:", trains)
+  puts trains.empty? ? "> Еще не создано ни одного поезда." : options_for("Поезда:", trains)
 end
 
 def create_station(stations)
   puts stations.any? ? options_for("Stations:", stations) : "В системе нет станций."
   print "Введите наименование станции: "
   station_name = gets.strip
-  return "> Станция #{station_name} уже есть." if any_item?(stations, 'name', station_name)
+  return "Станция #{station_name} уже есть." if any_item?(stations, 'name', station_name)
   puts "> Успешно создна станция #{station_name}."
   Station.new(station_name)
 end
@@ -77,9 +77,10 @@ def show_stations(stations)
   puts options_for("Станции:", stations)
   print "Введите номер станции в списке для просмотра поездов на этой станции, 0 - для выхода: "
   command = gets.strip
-  return if  command == "0"
+  return if command == "0"
   station = stations.at(command.to_i - 1)
-  puts station.trains.any? ? station.trains : "> Нет поездов на станции."
+  return "Неправильный ввод! Повторите сначала." unless station
+  puts station.trains.any? ? station.display : "> Нет поездов на станции."
 end
 
 def create_route(routes, stations)
@@ -87,7 +88,7 @@ def create_route(routes, stations)
   print "Введите наименование маршрута: "
   route_name = gets.strip
 
-  route = routes.select { |r| r.name == route_name }.first
+  route = routes.detect { |r| r.name == route_name }
   return "> Маршрут с наименование #{route_name} уже существует. Начните снова." if route
 
   puts options_for("Станции:", stations)
@@ -189,7 +190,7 @@ def add_wagon_to_train(train)
   puts options_for("> Вагоны уже включённые в состав поезда:", train.wagons) if train.wagons.any?
   print "Введите номер нового вагона: "
   wagon_number = gets.strip
-  return "> Вагон с номером #{wagon_number} уже есть в составе поезда" if any_item?(train.wagons.select, 'number', wagon_number)
+  return "> Вагон с номером #{wagon_number} уже есть в составе поезда" if any_item?(train.wagons, 'number', wagon_number)
   klass = CargoWagon if train.type == Types::CARGO
   klass = PassengerWagon if train.type == Types::PASSENGER
   wagon = klass.new(wagon_number)
@@ -269,6 +270,7 @@ def seed(stations, routes, trains)
   stations << Station.new("Астрахань")
   stations << Station.new("Волгоград")
   trains << PassengerTrain.new("001")
-  trains << CargoTrain.new("002")
   routes << Route.new("111", stations[0], stations[1])
+  trains << PassengerTrain.new("001").accept(routes[0])
+  trains << CargoTrain.new("002").accept(routes[0])
 end
