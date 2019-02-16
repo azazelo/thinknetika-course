@@ -6,17 +6,14 @@ class Station
   include Messages::Station
   attr_reader :name, :trains
 
-  @@all = []
-
   def initialize(name)
     @name = name
     @trains = []
-    @@all << self
     register_instance
   end
 
   def self.all
-    @@all
+    instances
   end
 
   def receive_train(train)
