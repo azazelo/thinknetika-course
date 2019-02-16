@@ -14,7 +14,7 @@ class Train
   attr_accessor :speed, :route, :current_station
   attr_reader :current_position, :number, :type, :wagons
 
-  @@trains = []
+  @@trains = {}
 
   def initialize(number)
     @number = number
@@ -22,12 +22,12 @@ class Train
     @route = nil
     @current_position = nil
     @wagons = []
-    @@trains << self
+    @@trains[number] = self
     register_instance
   end
 
   def self.find(number)
-    @@trains.detect { |t| t.number == number } || nil
+    @@trains[number]
   end
 
   def increase_speed(num)

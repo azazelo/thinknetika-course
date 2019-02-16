@@ -5,23 +5,21 @@ module InstanceCounter
   end
 
   module ClassMethods
-    def instances_count
-      self.instance_variable_get(:@instances_count)
-    end
+    attr_writer :instances, :instances_count
+
     def instances
-      self.instance_variable_get(:@instances)
+      @instances ||= []
+    end
+    def instances_count
+      @instances_count ||= 0
     end
   end
 
   module InstanceMethods
-
-    protected
-
+    private
     def register_instance
-      old_value = self.class.instance_variable_get(:@instances_count) || 0
-      self.class.instance_variable_set("@instances_count", old_value += 1)
-      old_value = self.class.instance_variable_get(:@instances) || []
-      self.class.instance_variable_set("@instances", old_value << self)
+      self.class.instances << self
+      self.class.instances_count += 1
     end
   end
 end
