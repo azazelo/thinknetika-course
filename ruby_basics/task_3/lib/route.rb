@@ -1,6 +1,8 @@
 require_relative "messages"
+require_relative "instance_counter"
 
 class Route
+  include InstanceCounter
   include Messages::Route
   attr_accessor :name
   attr_reader :stations
@@ -8,6 +10,7 @@ class Route
   def initialize(name, first_station, last_station)
     @name = name
     @stations = [first_station, last_station]
+    register_instance
   end
 
   def add_station(station)

@@ -271,6 +271,6 @@ def seed(stations, routes, trains)
   stations << Station.new("Волгоград")
   trains << PassengerTrain.new("001")
   routes << Route.new("111", stations[0], stations[1])
-  trains << PassengerTrain.new("001").accept(routes[0])
+  trains[0].accept(routes[0])
   trains << CargoTrain.new("002").accept(routes[0])
 end

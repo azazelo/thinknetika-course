@@ -1,12 +1,22 @@
 require_relative "messages"
+require_relative "instance_counter"
 
 class Station
+  include InstanceCounter
   include Messages::Station
   attr_reader :name, :trains
+
+  @@all = []
 
   def initialize(name)
     @name = name
     @trains = []
+    @@all << self
+    register_instance
+  end
+
+  def self.all
+    @@all
   end
 
   def receive_train(train)

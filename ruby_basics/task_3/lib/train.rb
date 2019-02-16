@@ -2,13 +2,18 @@ require_relative "route"
 require_relative "station"
 require_relative "messages"
 require_relative "types"
+require_relative "maker"
+require_relative "instance_counter"
 
 class Train
+  include InstanceCounter
+  include Maker
   include Types
   include Messages::Train
 
   attr_accessor :speed, :route, :current_station
   attr_reader :current_position, :number, :type, :wagons
+
 
   def initialize(number)
     @number = number
@@ -16,6 +21,11 @@ class Train
     @route = nil
     @current_position = nil
     @wagons = []
+    register_instance
+  end
+
+  def self.find(number)
+    instances.detect { |t| t.number == number } || nil
   end
 
   def increase_speed(num)
