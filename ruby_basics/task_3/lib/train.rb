@@ -4,17 +4,19 @@ require_relative "messages"
 require_relative "types"
 require_relative "maker"
 require_relative "instance_counter"
+require_relative "validations"
 
 class Train
   include InstanceCounter
   include Maker
   include Types
   include Messages::Train
+  include Validations
 
   attr_accessor :speed, :route, :current_station
   attr_reader :current_position, :number, :type, :wagons
-
-  @@trains = {}
+  validates :number, presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i
+  validates :type,   presence: true, inclusion: Types::ALL
 
   def initialize(number)
     @number = number
@@ -22,12 +24,20 @@ class Train
     @route = nil
     @current_position = nil
     @wagons = []
-    @@trains[number] = self
+    # validate! :number,  presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i
+    # validate! :type,  presence: true, one_of: Types::ALL
+    # begin
+    # puts "#{self.class.instances.first.inspect}"
+    #   validate!
+    # rescue
+    #   puts Train.validations.inspect
+    # end
+    validate!
     register_instance
   end
 
   def self.find(number)
-    @@trains[number]
+    instances.detect{ |i| i.number == number }
   end
 
   def increase_speed(num)

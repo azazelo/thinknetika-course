@@ -1,14 +1,18 @@
 require_relative "messages"
 require_relative "instance_counter"
+require_relative "validations"
 
 class Station
   include InstanceCounter
+  include Validations
   include Messages::Station
   attr_reader :name, :trains
+  validates :name, :presence => true, :format => /[\S]+/i
 
   def initialize(name)
     @name = name
     @trains = []
+    validate!
     register_instance
   end
 
@@ -49,4 +53,5 @@ class Station
   def info
     "ст.#{self.name}"
   end
+
 end

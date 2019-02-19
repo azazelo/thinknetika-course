@@ -47,16 +47,23 @@ def menu
 end
 
 def create_train
-  print "Введите номер поезда: "
-  number = gets.strip
-  print "Введите 1 для создания пассажирского, 2 для создания грузового поезда: "
-  puts chosen_type = gets.strip
-  return "Неправильный ввод! Повторите сначала." unless %w[1 2].include?(chosen_type)
-  klass = PassengerTrain if chosen_type == "1"
-  klass = CargoTrain if chosen_type == "2"
-  train = klass.new(number)
-  puts "> Успешно создан поезд #{train.info}."
-  train
+  loop do
+    print "Введите номер поезда: "
+    number = gets.strip
+    print "Введите 1 для создания пассажирского, 2 для создания грузового поезда: "
+    puts chosen_type = gets.strip
+    (puts "Неправильный выбор типа поезда! Повторите сначала. Необходимо ввести цифру 1 или 2."; next) unless %w[1 2].include?(chosen_type)
+    klass = PassengerTrain if chosen_type == "1"
+    klass = CargoTrain if chosen_type == "2"
+    begin
+      train = klass.new(number)
+      puts "> Успешно создан #{train.info}."
+      return train
+    rescue RuntimeError => e
+      puts "Ошибка: " + e.inspect
+      puts "> Повторите ввод."
+    end
+  end
 end
 
 def show_trains(trains)
@@ -269,8 +276,8 @@ def seed(stations, routes, trains)
   stations << Station.new("Москва")
   stations << Station.new("Астрахань")
   stations << Station.new("Волгоград")
-  trains << PassengerTrain.new("001")
+  trains << PassengerTrain.new("001-99")
   routes << Route.new("111", stations[0], stations[1])
   trains[0].accept(routes[0])
-  trains << CargoTrain.new("002").accept(routes[0])
+  trains << CargoTrain.new("002-bb").accept(routes[0])
 end
