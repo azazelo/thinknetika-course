@@ -13,8 +13,8 @@ class Train
   include Messages::Train
   include Validations
 
-  attr_accessor :speed, :route, :current_station
-  attr_reader :current_position, :number, :type, :wagons
+  attr_accessor :speed, :route, :current_station, :current_position
+  attr_reader :number, :type, :wagons
   validates :number, presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i
   validates :type,   presence: true, inclusion: Types::ALL
 
@@ -22,18 +22,11 @@ class Train
     @number = number
     @speed = 0
     @route = nil
-    @current_position = nil
+    @current_position = 0
     @wagons = []
-    # validate! :number,  presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i
-    # validate! :type,  presence: true, one_of: Types::ALL
-    # begin
-    # puts "#{self.class.instances.first.inspect}"
-    #   validate!
-    # rescue
-    #   puts Train.validations.inspect
-    # end
     validate!
     register_instance
+    self
   end
 
   def self.find(number)
@@ -42,10 +35,12 @@ class Train
 
   def increase_speed(num)
     self.speed += num
+    self
   end
 
   def stop
     self.speed = 0
+    self
   end
 
   def add_wagon(wagon)
@@ -66,7 +61,8 @@ class Train
 
   def accept(route)
     self.route = route
-    @current_station = self.route.stations.first
+    self.current_station = self.route.stations.first
+    self.current_position = 0
     self.route.stations.first.receive_train(self)
     self
   end
@@ -76,17 +72,17 @@ class Train
     return at_last_station unless self.next_station
     return speed_is_zero if self.speed.zero?
     self.current_station.dispatch_train(self)
-    @current_station = self.next_station.receive_train(self)
+    self.current_station = self.next_station.receive_train(self)
+    self.current_position = route.stations.index(@current_station)
     self
   end
-
 
   def go_backward
     return there_is_no_route + add_route unless self.route
     return at_first_station unless self.previous_station
     return speed_is_zero if self.speed.zero?
     self.current_station.dispatch_train(self)
-    @current_station = self.previous_station.receive_train(self)
+    self.previous_station.receive_train(self)
     self
   end
 
