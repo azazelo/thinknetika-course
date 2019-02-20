@@ -34,7 +34,7 @@ module Validations
 
     def validate!
       # arg_name = :name
-      # validators = {presence: true, format: regexp, uniqueness: true, inclusion: list}
+      # validators = {presence: true, format: regexp, inclusion: array}
       validations.each do |arg_name, validators|
         validators.each do |validator, value|
           raise "Ошибка! Отсутствует определение валидатора <#{validator}>." unless self.respond_to?(validator, true)
