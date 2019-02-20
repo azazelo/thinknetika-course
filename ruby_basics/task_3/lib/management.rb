@@ -263,7 +263,6 @@ def move_trains(routes, trains)
     return res if res.is_a?(String)
   end
   train
-
 end
 
 def choose_train(trains)
@@ -283,7 +282,6 @@ def choose_station(stations)
     puts options_for("Станции:", stations)
     print "Введите номер из списка: "
     choise = gets.strip.to_i
-    puts stations.size
     (puts "> Неправильно набран номер. Повторите ввод."; next) if (choise.zero? || choise > stations.size)
     station = stations[choise - 1]
     puts "> Выбрана станция : #{station.info}"
