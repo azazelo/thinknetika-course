@@ -29,9 +29,9 @@ module Validations
     private
 
     def validate!
-      # arg_name = :name
-      # validators = {presence: true, format: regexp, inclusion: array}
       validations.each do |attr, validators|
+        # attr = :name
+        # validators = {presence: true, format: regexp, inclusion: array}
         validators.each do |validator, value|
           raise "Ошибка! Отсутствует определение валидатора <#{validator}>." unless self.respond_to?(validator, true)
           send "#{validator}", attr, value

@@ -30,6 +30,10 @@ describe Station do
     expect{ Station.new("") }.to raise_error(RuntimeError)
   end
 
+  it "should raise exception if created station with existing name" do
+    expect{ Station.new(@station_name) }.to raise_error(RuntimeError)
+  end
+
   it "should be created with name" do
     expect(@station.name).to eq(@station_name)
   end
