@@ -33,7 +33,7 @@ module Validations
         # attr = :name
         # validators = {presence: true, format: regexp, inclusion: array}
         validators.each do |validator, value|
-          raise "Ошибка! Отсутствует определение валидатора <#{validator}>." unless self.respond_to?(validator, true)
+          raise "Отсутствует определение валидатора <#{validator}>." unless self.respond_to?(validator, true)
           send "#{validator}", attr, value
         end
       end
@@ -45,19 +45,19 @@ module Validations
     end
 
     def presence(attr, value)
-      raise "Ошибка! <#{attr}>: Не может быть пустым!" if self.send(attr) == ""
+      raise "<#{attr}>: Не может быть пустым!" if self.send(attr) == ""
     end
 
     def format(attr, value)
-      raise "Ошибка! <#{attr}>: Формат неверный! Должен быть такой <#{value}>" unless self.send(attr) =~ value
+      raise "<#{attr}>: Формат неверный! Должен быть такой <#{value}>" unless self.send(attr) =~ value
     end
 
     def inclusion(attr, value)
-      raise "Ошибка! <#{attr}>: Должен быть один из #{value}" unless value.include?(self.send(attr))
+      raise "<#{attr}>: Должен быть один из #{value}" unless value.include?(self.send(attr))
     end
 
-    def uniquieness(attr, value)
-      raise "Ошибка! <#{attr}>: Уже создан объект с атрибутом '#{attr}' = #{self.send(attr)}" if self.class.instances.detect { |o| o.send(attr) == self.send(attr) }
+    def uniqueness(attr, value)
+      raise "<#{attr}>: Уже создан объект класса '#{self.class.name}' с атрибутом '#{attr}' = '#{self.send(attr)}'" if self.class.instances.detect { |o| o.send(attr) == self.send(attr) }
     end
 
   end

@@ -60,7 +60,7 @@ def create_train
       puts "> Успешно создан #{train.info}."
       return train
     rescue RuntimeError => e
-      puts "Ошибка: " + e.inspect
+      puts e.inspect
       puts "> Повторите ввод."
     end
   end
@@ -71,12 +71,19 @@ def show_trains(trains)
 end
 
 def create_station(stations)
-  puts stations.any? ? options_for("Stations:", stations) : "В системе нет станций."
-  print "Введите наименование станции: "
-  station_name = gets.strip
-  return "Станция #{station_name} уже есть." if any_item?(stations, 'name', station_name)
-  puts "> Успешно создна станция #{station_name}."
-  Station.new(station_name)
+  loop do
+    puts stations.any? ? options_for("Станции в системе:", stations) : "В системе нет станций."
+    print "Введите наименование новой станции: "
+    station_name = gets.strip
+    begin
+      station = Station.new(station_name)
+      puts "> Успешно создна станция #{station_name}."
+      return station
+    rescue RuntimeError => e
+      puts e.inspect
+      puts "> Повторите ввод."
+    end
+  end
 end
 
 def show_stations(stations)
@@ -91,25 +98,32 @@ def show_stations(stations)
 end
 
 def create_route(routes, stations)
-  return "> Невозможно создать маршрут. В системе нет станций. Создайте по крайней мере две станции." if stations.size < 2
-  print "Введите наименование маршрута: "
-  route_name = gets.strip
+  loop do
+    return "> Невозможно создать маршрут. В системе нет станций. Создайте по крайней мере две станции." if stations.size < 2
+    print "Введите наименование маршрута: "
+    route_name = gets.strip
+    (puts "> Наименование маршрута не может быть пустым. Повторите ввод."; next) if route_name.empty?
+    (puts "> Такой маршрут уже есть. Повторите ввод."; next) if any_item?(routes, 'name', route_name)
 
-  route = routes.detect { |r| r.name == route_name }
-  return "> Маршрут с наименование #{route_name} уже существует. Начните снова." if route
+    begin
 
-  puts options_for("Станции:", stations)
-  print "Введите номер первой станции: "
-  first_station = stations[gets.strip.to_i - 1]
-  puts first_station.inspect
+      puts "Выбор ПЕРВОЙ станции маршрута: "
+      res = choose_station(stations)
+      (puts res; next) if res.is_a?(String)
+      first_station = res
+      puts "Выбор ПОСЛЕДНЕЙ станции маршрута: "
+      res = choose_station(stations)
+      (puts res; next) if res.is_a?(String)
+      last_station = res
 
-  print "Введите номер последней станции: "
-  last_station = stations[gets.strip.to_i - 1]
-  puts last_station.inspect
-
-  route = Route.new(route_name, first_station, last_station)
-  puts "> Успешно создан маршрут #{route.info}."
-  route
+      route = Route.new(route_name, first_station, last_station)
+      puts "> Успешно создан маршрут #{route.info}."
+      return route
+    rescue RuntimeError => e
+      puts e.inspect
+      puts "> Повторите ввод."
+    end
+  end
 end
 
 def show_routes(routes)
@@ -255,12 +269,26 @@ end
 def choose_train(trains)
   return "> Нет ни одного поезда в системе. Создайте поезд." if trains.empty?
   puts "Поезда: "
-  puts options_for("Trains", trains)
+  puts options_for("Trains:", trains)
   print "Введите номер из списка: "
   train = trains[gets.strip.to_i - 1]
   return "> Неправильно набран номер." unless train
   puts "Поезд : #{train.info}"
   train
+end
+
+def choose_station(stations)
+  loop do
+    return "> Нет ни одной станции в системе. Создайте станции." if stations.empty?
+    puts options_for("Станции:", stations)
+    print "Введите номер из списка: "
+    choise = gets.strip.to_i
+    puts stations.size
+    (puts "> Неправильно набран номер. Повторите ввод."; next) if (choise.zero? || choise > stations.size)
+    station = stations[choise - 1]
+    puts "> Выбрана станция : #{station.info}"
+    return station
+  end
 end
 
 def options_for(title, array, field_name="info")

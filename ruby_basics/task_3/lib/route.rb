@@ -1,15 +1,19 @@
 require_relative "messages"
 require_relative "instance_counter"
+require_relative "validations"
 
 class Route
+  include Validations
   include InstanceCounter
   include Messages::Route
   attr_accessor :name
   attr_reader :stations
+  validates :name, presence: true, uniqueness: true
 
   def initialize(name, first_station, last_station)
     @name = name
     @stations = [first_station, last_station]
+    validate!
     register_instance
   end
 

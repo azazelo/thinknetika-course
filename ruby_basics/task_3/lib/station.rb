@@ -7,7 +7,7 @@ class Station
   include Validations
   include Messages::Station
   attr_reader :name, :trains
-  validates :name, :presence => true, :format => /[\S]+/i, :uniquieness => true
+  validates :name, :presence => true, :format => /[\S]+/i, :uniqueness => true
 
   def initialize(name)
     @name = name

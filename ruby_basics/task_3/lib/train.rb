@@ -15,7 +15,7 @@ class Train
 
   attr_accessor :speed, :route, :current_station, :current_position
   attr_reader :number, :type, :wagons
-  validates :number, presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i
+  validates :number, presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i, :uniqueness => true
   validates :type,   presence: true, inclusion: Types::ALL
 
   def initialize(number)
@@ -81,8 +81,7 @@ class Train
     return there_is_no_route + add_route unless self.route
     return at_first_station unless self.previous_station
     return speed_is_zero if self.speed.zero?
-    self.current_station.dispatch_train(self)
-    self.previous_station.receive_train(self)
+    self.current_station = self.previous_station
     self
   end
 

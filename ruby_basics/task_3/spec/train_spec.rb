@@ -18,9 +18,6 @@ describe Train do
     @passenger_wagon = PassengerWagon.new('001')
     @cargo_wagon = CargoWagon.new('002')
     @type_cargo = Types::CARGO
-  end
-
-  before :each do
     @number = "C01-A1"
     @passenger_train = PassengerTrain.new(@number)
     @passenger_train.accept(@route)
@@ -57,12 +54,12 @@ describe Train do
     expect(@passenger_train.speed).to eq(0)
   end
 
-  it "can not add wagon if speed != 0" do
+  it "can not add wagon if speed > 0" do
     @passenger_train.increase_speed(10)
     expect(@passenger_train.add_wagon(@passenger_wagon)).to eq(can_not_add_wagon + speed_is_not_zero)
   end
 
-  it "can remove wagon if speed > 0" do
+  it "can not remove wagon if speed > 0" do
     @passenger_train.increase_speed(10)
     expect(@passenger_train.remove_wagon('001')).to eq(can_not_remove_wagon + speed_is_not_zero)
   end
@@ -78,6 +75,11 @@ describe Train do
     expect(@passenger_train.current_station).to eq(@route.stations.first)
   end
 
+  it "can not move backward on first station" do
+    @passenger_train.go_backward
+    expect(@passenger_train.current_station).to eq(@station_a)
+  end
+
   it "can move forward" do
     @passenger_train.increase_speed(10)
     @passenger_train.go_forward
@@ -85,21 +87,15 @@ describe Train do
   end
 
   it "can NOT move forward on last station" do
-    @passenger_train.increase_speed(10)
-    @passenger_train.current_station = @station_c
+    @passenger_train.go_forward
     @passenger_train.go_forward
     expect(@passenger_train.current_station).to eq(@station_c)
   end
 
-  it "can not move backward on first station" do
-    @passenger_train.increase_speed(10)
-    @passenger_train.accept(@route)
-    @passenger_train.go_backward
-    expect(@passenger_train.current_station).to eq(@station_a)
-  end
-
   it "can not move backward if on first station in route" do
     @passenger_train.increase_speed(10)
+    @passenger_train.go_backward
+    @passenger_train.go_backward
     @passenger_train.go_backward
     expect(@passenger_train.current_station).to eq(@station_a)
   end
@@ -113,7 +109,7 @@ describe Train do
   end
 
   it "can get next_station" do
-    expect(@passenger_train.get_station("next")).to eq(@station_b)
+    expect(@passenger_train.get_station("next")).to eq(@station_c)
   end
 
   it "can NOT get next_station if on last station" do
@@ -124,7 +120,7 @@ describe Train do
   it "can get previous_station" do
     @passenger_train.increase_speed(10)
     @passenger_train.go_forward
-    expect(@passenger_train.get_station("previous")).to eq(@station_a)
+    expect(@passenger_train.get_station("previous")).to eq(@station_b)
   end
 
 
