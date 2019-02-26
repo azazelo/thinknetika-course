@@ -48,11 +48,11 @@ end
 
 def create_train
   loop do
-    print "Введите номер поезда: "
-    number = gets.strip
     print "Введите 1 для создания пассажирского, 2 для создания грузового поезда: "
     puts chosen_type = gets.strip
     (puts "Неправильный выбор типа поезда! Повторите сначала. Необходимо ввести цифру 1 или 2."; next) unless %w[1 2].include?(chosen_type)
+    print "Введите номер поезда (формат: 3 буквы или цифры + необязательный дефис + 2 буквы или цифры): "
+    number = gets.strip
     klass = PassengerTrain if chosen_type == "1"
     klass = CargoTrain if chosen_type == "2"
     begin
