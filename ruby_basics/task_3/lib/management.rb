@@ -1,3 +1,5 @@
+require_relative 'menu'
+
 # - Создавать станции
 # - Создавать поезда
 # - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
@@ -7,43 +9,52 @@
 # - Перемещать поезд по маршруту вперед и назад
 # - Просматривать список станций и список поездов на станции
 
-def menu
+def management
   stations = []
   routes = []
   trains = []
+  entries = [stations, trains, routes]
   seed(stations, routes, trains)
+  create_menu
   loop do
-    system('clear')
-    puts "============ Железная дорога =============="
-    puts "1 - Создать станцию."
-    puts "2 - Просмотр станций."
-    puts "3 - Создать поезд."
-    puts "4 - Вывести список поездов."
-    puts "5 - Изменить состав и маршрут поезда."
-    puts "6 - Создать маршрут."
-    puts "7 - Вывести список маршрутов."
-    puts "8 - Редактировать маршрут."
-    puts "9 - Двигать поезд по маршруту."
-    puts "0 - Выход."
-    print ": "
-
+    Menu.show
     command = gets.strip
-    case command
-    when "0" then break
-    when "1" then (res = create_station(stations)).is_a?(String) ? (puts res; next) : (stations << res)
-    when "2" then (res = show_stations(stations)).is_a?(String) ? (puts res) : res
-    when "3" then (res = create_train).is_a?(String) ? (puts res) : (trains << res)
-    when "4" then show_trains(trains)
-    when "5" then res = edit_trains(trains, routes); puts res if res.is_a?(String)
-    when "6" then (res = create_route(routes, stations)).is_a?(String) ? (puts res) : (routes << res)
-    when "7" then show_routes(routes)
-    when "8" then puts edit_route(routes, stations)
-    when "9" then puts move_trains(routes, trains)
+    break if command == "0"
+    begin
+      Menu.handle_command(command, *entries)
+    rescue Exception => e
+      puts e.inspect
+      puts "Что-то пошло не так. Повторите ввод."
     end
-
     print ">> Нажмите любую клавишу для продолжения..."
     gets.strip
   end
+end
+
+def create_menu
+  Menu.create(
+    [
+      ["1", "Создать станцию.",
+        proc { |stations, trains, routes| (res = create_station(stations)).is_a?(String) ? (puts res; next) : (stations << res) }],
+      ["2", "Просмотр станций.",
+        proc { |stations, trains, routes| (res = show_stations(stations)).is_a?(String) ? (puts res) : res }],
+      ["3", "Создать поезд.",
+        proc { |stations, trains, routes| (res = create_train).is_a?(String) ? (puts res) : (trains << res) }],
+      ["4", "Просмотр поездов.",
+        proc { |stations, trains, routes| show_trains(trains) }],
+      ["5", "Изменить состав и/или маршрут поезда.",
+        proc { |stations, trains, routes| res = edit_trains(trains, routes); puts res if res.is_a?(String) }],
+      ["6", "Создать маршрут.",
+        proc { |stations, trains, routes| (res = create_route(routes, stations)).is_a?(String) ? (puts res) : (routes << res) }],
+      ["7", "Просмотр маршрутов.",
+        proc { |stations, trains, routes| show_routes(routes) }],
+      ["8", "Изменить маршрут.",
+        proc { |stations, trains, routes| puts edit_route(routes, stations) }],
+      ["9", "Передвинуть поезд по маршруту.",
+        proc { |stations, trains, routes| puts move_trains(routes, trains) }],
+      ["0", "Выход."]
+    ]
+  )
 end
 
 def create_train
@@ -189,11 +200,14 @@ def edit_trains(trains, routes)
   res = choose_train(trains)
   return "> Поезд не выбран." if res.is_a?(String)
   train = res
-  puts "1 - добавить вагон в состав поезда,"
-  puts "2 - удалить вагон из состава поезда,"
-  puts "3 - назначить маршрут поезду."
+  puts "1 - Добавить вагон в состав поезда,"
+  puts "2 - Удалить вагон из состава поезда,"
+  puts "3 - Назначить маршрут поезду."
+  puts "0 - Отмена. Возврат в предыдущее меню."
   command = gets.strip
   case command
+  when "0"
+    return
   when "1"
     res = add_wagon_to_train(train)
     return res if res.is_a?(String)
@@ -209,7 +223,7 @@ end
 
 def add_wagon_to_train(train)
   puts options_for("> Вагоны уже включённые в состав поезда:", train.wagons) if train.wagons.any?
-  print "Введите номер нового вагона: "
+  print "Введите номер или наименование нового вагона: "
   wagon_number = gets.strip
   return "> Вагон с номером #{wagon_number} уже есть в составе поезда" if any_item?(train.wagons, 'number', wagon_number)
   klass = CargoWagon if train.type == Types::CARGO

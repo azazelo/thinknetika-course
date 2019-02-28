@@ -8,4 +8,4 @@ require_relative 'cargo_train'
 require_relative 'passenger_train'
 require_relative 'management'
 
-menu
+management
