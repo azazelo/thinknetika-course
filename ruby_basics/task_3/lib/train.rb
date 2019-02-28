@@ -33,6 +33,12 @@ class Train
     instances.detect{ |i| i.number == number }
   end
 
+  def wagons_do(&block)
+    @wagons.each do |wagon|
+      block.call(wagon)
+    end
+  end
+
   def increase_speed(num)
     self.speed += num
     self
@@ -99,9 +105,11 @@ class Train
 
   def info
     "Поезд ##{self.number}:
-      Тип: #{self.type}
-      Вагоны(#{@wagons.size}): #{@wagons.any? ? @wagons.map(&:info).join(', ') : "Вагонов нет. Только локомотив."}
-      Маршрут: #{self.route ? self.route.info : 'Пока не задан.'}"
+       Тип: #{self.type}
+       Маршрут: #{self.route ? self.route.info : 'Пока не задан.'}
+       Текущая станция: #{self.current_station ? self.current_station.info : 'Пока не задана.'}
+       Вагоны(#{@wagons.size}):
+        #{@wagons.any? ? @wagons.map(&:info).join("\n\t") : "Вагонов нет. Только локомотив."}"
   end
 
   def previous_station

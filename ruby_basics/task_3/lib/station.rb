@@ -20,6 +20,12 @@ class Station
     instances
   end
 
+  def trains_do(&block)
+    @trains.each do |train|
+      block.call(train)
+    end
+  end
+
   def receive_train(train)
     return train_already_on_station if self.trains.include?(train)
     self.trains << train

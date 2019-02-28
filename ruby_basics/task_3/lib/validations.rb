@@ -48,10 +48,6 @@ module Validations
       raise "<#{attr}>: Не может быть пустым!" if self.send(attr) == ""
     end
 
-    def format(attr, value)
-      raise "<#{attr}>: Формат неверный! Должен быть такой <#{value}>" unless self.send(attr) =~ value
-    end
-
     def inclusion(attr, value)
       raise "<#{attr}>: Должен быть один из #{value}" unless value.include?(self.send(attr))
     end
@@ -59,6 +55,15 @@ module Validations
     def uniqueness(attr, value)
       raise "<#{attr}>: Уже создан объект класса '#{self.class.name}' с атрибутом '#{attr}' = '#{self.send(attr)}'" if self.class.instances.detect { |o| o.send(attr) == self.send(attr) }
     end
+
+    def format(attr, value)
+      raise "<#{attr}>: Формат неверный! Должен быть такой <#{value.inspect}>" unless self.send(attr) =~ value
+    end
+
+    def numeric(attr, value)
+      raise "<#{attr}>: Должен быть числом. Значение: #{self.send(attr)}" unless self.send(attr).is_a?(Fixnum)
+    end
+
 
   end
 end
