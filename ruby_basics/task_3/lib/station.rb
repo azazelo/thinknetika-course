@@ -20,10 +20,8 @@ class Station
     instances
   end
 
-  def trains_do(&block)
-    @trains.each do |train|
-      block.call(train)
-    end
+  def each_train
+    @trains.each { |train| yield(train) }
   end
 
   def receive_train(train)

@@ -24,7 +24,6 @@ class Menu
   def handle_command(command, *options)
     item = self.items.detect { |instance| instance.number == command }
     item.block.call(*options)
-    self
   end
 
 end

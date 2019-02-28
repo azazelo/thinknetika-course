@@ -1,6 +1,9 @@
-require 'passenger_wagon'
-require 'cargo_wagon'
-require 'types'
+# require 'wagon'
+# require 'passenger_wagon'
+# require 'cargo_wagon'
+# require 'types'
+require 'messages'
+include Messages::Wagon
 
 describe Wagon do
   let(:number) { "001" }

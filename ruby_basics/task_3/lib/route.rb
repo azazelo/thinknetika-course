@@ -5,7 +5,7 @@ require_relative "validations"
 class Route
   include Validations
   include InstanceCounter
-  include Messages::Route
+  include Messages
   attr_accessor :name
   attr_reader :stations
   validates :name, presence: true, uniqueness: true
@@ -37,4 +37,9 @@ class Route
   def info
     "#{self.name}: " + @stations.map.with_index(1) { |s, i| "#{i}. #{s.info}"  }.join(" -> ")
   end
+
+  def method_missing(meth)
+    puts meth.to_s
+  end
+
 end

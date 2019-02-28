@@ -1,6 +1,7 @@
 require 'passenger_train'
 require 'cargo_train'
 
+# require 'wagon'
 require 'passenger_wagon'
 require 'cargo_wagon'
 require 'types'

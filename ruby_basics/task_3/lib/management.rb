@@ -6,6 +6,8 @@ require_relative 'menu'
 # - Назначать маршрут поезду
 # - Добавлять вагоны к поезду
 # - Отцеплять вагоны от поезда
+# - Добавлять/высаживть пассажиров
+# - Загружать/выгружать груз
 # - Перемещать поезд по маршруту вперед и назад
 # - Просматривать список станций и список поездов на станции
 
@@ -22,12 +24,12 @@ def management
     menu.show
     command = gets.strip
     break if command == "0"
-    begin
+    # begin
       menu.handle_command(command, stations, trains, routes)
-    rescue Exception => e
-      puts e.inspect
-      puts "Что-то пошло не так. Повторите ввод."
-    end
+    # rescue Exception => e
+    #   puts e.inspect
+    #   puts "Что-то пошло не так. Повторите ввод."
+    # end
     print ">> Нажмите любую клавишу для продолжения..."
     gets.strip
   end
@@ -224,13 +226,12 @@ def add_wagon_to_train(train)
     case
     when train.is_cargo?
       print "> Введите грузоподъемность вагона (кг.): "
-      value = gets.strip.to_i
       klass = CargoWagon
     when train.is_passenger?
       print "> Введите количество мест в вагоне: "
       klass = PassengerWagon
-      value = gets.strip.to_i
     end
+    value = gets.strip.to_i
     # begin
       wagon = klass.new(wagon_number, value)
       train.add_wagon(wagon)
@@ -282,7 +283,8 @@ def load_unload_wagon(train)
     wagon_number = gets.strip.to_i
     wagon = train.wagons[wagon_number - 1]
     (puts "> Такого вагона нет в составе поезда. Повторите ввод."; next) unless wagon
-    menu.handle_command(command, wagon)
+    res = menu.handle_command(command, wagon)
+    (puts res; next) if res.is_a?(String)
     puts "> Успешно."
     puts "> Новое состояние вагона: #{wagon.info}."
     print "Повторить ? 1 - Да, 2 -  Нет: "
@@ -302,16 +304,14 @@ def load_unload_weight_menu(train)
         proc { |wagon|
           print "Введите вес груза (кг.): "
           weight = gets.strip.to_i
-          res = wagon.load(weight)
-          puts res if res.is_a?(String)
+          wagon.push(weight)
         }
       ],
       ["2", "Выгрузить груз из вагона.",
         proc { |wagon|
           print "Введите вес груза (кг.): "
           weight = gets.strip.to_i
-          res = wagon.outload(weight)
-          puts res if res.is_a?(String)
+          wagon.pull(weight)
         } ],
       ["0", "Возврат в предыдущее меню."]
     ]
@@ -321,8 +321,8 @@ end
 def get_in_out_passenger_menu(train)
   Menu.new('pickup_passenger').create(
     [
-      ["1", "Посадить пассажира в вагон.", proc { |wagon| wagon.occupy } ],
-      ["2", "Высадить пассажира из вагона.", proc { |wagon| wagon.vacate } ],
+      ["1", "Посадить пассажира в вагон.",   proc { |wagon| wagon.push } ],
+      ["2", "Высадить пассажира из вагона.", proc { |wagon| wagon.pull } ],
       ["0", "Возврат в предыдущее меню." ]
     ]
   )
@@ -386,8 +386,13 @@ def seed(stations, routes, trains)
   stations << Station.new("Москва")
   stations << Station.new("Астрахань")
   stations << Station.new("Волгоград")
-  trains << PassengerTrain.new("001-99")
+  pt = PassengerTrain.new("001-99")
+  trains << pt
+  pt.wagons << PassengerWagon.new("1", 1)
   routes << Route.new("111", stations[0], stations[1])
   trains[0].accept(routes[0])
-  trains << CargoTrain.new("002-bb").accept(routes[0])
+  ct = CargoTrain.new("002-bb")
+  trains << ct
+  ct.accept(routes[0])
+  ct.wagons << CargoWagon.new("1", 100)
 end

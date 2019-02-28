@@ -1,7 +1,7 @@
 require 'cargo_train'
 require 'station'
 require 'messages'
-include Messages::Train
+include Messages::Station
 
 describe Station do
 

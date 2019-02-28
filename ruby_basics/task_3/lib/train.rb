@@ -33,10 +33,8 @@ class Train
     instances.detect{ |i| i.number == number }
   end
 
-  def wagons_do(&block)
-    @wagons.each do |wagon|
-      block.call(wagon)
-    end
+  def each_wagon
+    @wagons.each { |wagon| yield(wagon) }
   end
 
   def increase_speed(num)

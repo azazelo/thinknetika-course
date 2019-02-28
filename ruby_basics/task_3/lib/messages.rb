@@ -46,11 +46,9 @@ module Messages
 
   module Wagon
     %w[
-      there_is_no_more_free_seats_to_occupy
-      there_is_no_more_free_space_to_load
-      free_space_is_too_small_for_this_weight
-      loaded_is_less_then_you_trying_to_unload
-      there_is_no_more_passengers_in
+      there_is_no_more_free_space_to_push
+      free_space_is_too_small_for_this_qty
+      you_trying_to_pull_more_then_loaded
     ].each do |meth_name|
       define_method meth_name do
         meth_name.gsub("_", " ").capitalize + ". "
