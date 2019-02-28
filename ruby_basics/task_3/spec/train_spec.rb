@@ -15,8 +15,8 @@ describe Train do
     @station_c = Station.new('C')
     @route = Route.new("A-C", @station_a, @station_c).add_station(@station_b)
     @type_passenger = Types::PASSENGER
-    @passenger_wagon = PassengerWagon.new('001')
-    @cargo_wagon = CargoWagon.new('002')
+    @passenger_wagon = PassengerWagon.new('001', 20)
+    @cargo_wagon = CargoWagon.new('002', 1000)
     @type_cargo = Types::CARGO
     @number = "C01-A1"
     @passenger_train = PassengerTrain.new(@number)

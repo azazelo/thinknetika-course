@@ -6,8 +6,8 @@ describe Wagon do
   let(:number) { "001" }
   let(:type_cargo) { Types::CARGO }
   let(:type_passenger) { Types::PASSENGER }
-  let(:cargo_wagon) { CargoWagon.new(number) }
-  let(:passenger_wagon) { PassengerWagon.new(number) }
+  let(:cargo_wagon) { CargoWagon.new(number, 1000) }
+  let(:passenger_wagon) { PassengerWagon.new(number, 50) }
 
   it "should be created with number" do
     expect(passenger_wagon.number).to eq(number)
@@ -26,11 +26,6 @@ describe Wagon do
   end
 
   it "should raise exception if number is empty string" do
-    expect { PassengerWagon.new("") }.to raise_error(RuntimeError)
+    expect { PassengerWagon.new("", 50) }.to raise_error(RuntimeError)
   end
-
-  it "should raise exception if number got wrong format. Right one is 'ddd'" do
-    expect { PassengerWagon.new("1") }.to raise_error(RuntimeError)
-  end
-
 end

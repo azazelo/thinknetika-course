@@ -41,7 +41,8 @@ module Validations
     end
 
     def validations
-      self.class.validations.empty? ? self.class.superclass.validations : self.class.validations
+      ##TODO fix getting validations from all tree
+      self.class.validations.empty? ? self.class.superclass.validations : (self.class.validations.merge(self.class.superclass.validations) rescue self.class.validations)
     end
 
     def presence(attr, value)
