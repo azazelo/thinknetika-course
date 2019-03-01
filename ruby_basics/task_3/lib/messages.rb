@@ -16,7 +16,7 @@ module Messages
       wagon_not_in_list
     ].each do |meth_name|
       define_method meth_name do
-        meth_name.gsub("_", " ") + ". "
+        Messages.meth_name_to_human(meth_name)
       end
     end
   end
@@ -27,7 +27,7 @@ module Messages
       no_such_train_on_station
     ].each do |meth_name|
       define_method meth_name do
-        meth_name.gsub("_", " ") + ". "
+        Messages.meth_name_to_human(meth_name)
       end
     end
   end
@@ -39,20 +39,27 @@ module Messages
       can_not_delete_last_station
     ].each do |meth_name|
       define_method meth_name do
-        meth_name.gsub("_", " ") + ". "
+        Messages.meth_name_to_human(meth_name)
       end
     end
   end
 
   module Wagon
     %w[
+      there_is_nothing_to_pull
       there_is_no_more_free_space_to_push
       free_space_is_too_small_for_this_qty
       you_trying_to_pull_more_then_loaded
+      you_trying_to_push_more_than_wagon_can_carry
     ].each do |meth_name|
       define_method meth_name do
-        meth_name.gsub("_", " ").capitalize + ". "
+        Messages.meth_name_to_human(meth_name)
       end
     end
   end
+
+  def self.meth_name_to_human(meth_name)
+    meth_name.gsub("_", " ").capitalize + ". "
+  end
+
 end

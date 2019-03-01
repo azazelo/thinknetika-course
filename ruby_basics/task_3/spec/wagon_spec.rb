@@ -31,4 +31,21 @@ describe Wagon do
   it "should raise exception if number is empty string" do
     expect { PassengerWagon.new("", 50) }.to raise_error(RuntimeError)
   end
+
+  it "should return #{there_is_nothing_to_pull}" do
+    expect(cargo_wagon.pull(1)).to eq(there_is_nothing_to_pull)
+  end
+
+  it "should return #{you_trying_to_push_more_than_wagon_can_carry}" do
+    expect(cargo_wagon.push(2000)).to eq(you_trying_to_push_more_than_wagon_can_carry)
+  end
+
+  it "should return #{free_space_is_too_small_for_this_qty}" do
+    expect(cargo_wagon.push(500).push(550)).to eq(free_space_is_too_small_for_this_qty)
+  end
+
+  it "should return #{there_is_no_more_free_space_to_push}" do
+    expect(cargo_wagon.push(1000).push(550)).to eq(there_is_no_more_free_space_to_push)
+  end
+
 end
