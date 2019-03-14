@@ -1,36 +1,17 @@
-require_relative "route"
-require_relative "station"
-require_relative "messages"
-require_relative "types"
-require_relative "maker"
-require_relative "instance_counter"
-require_relative "validations"
-
-class Train
-  include InstanceCounter
-  include Maker
-  include Types
-  include Messages::Train
-  include Validations
-
-  attr_accessor :speed, :route, :current_station, :current_position
-  attr_reader :number, :type, :wagons
-  validates :number, presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i, :uniqueness => true
-  validates :type,   presence: true, inclusion: Types::ALL
+require_relative 'base'
+class Train < Base
+  attr_accessor :speed, :route, :current_station, :wagons, :number, :type
+  attr_writer :current_position
+  validates :number,
+            presence: true, format: /[\w\d]{3}[-|]?[\w]{2}/i, uniqueness: true
+  validates :type, presence: true, inclusion: Types::ALL
 
   def initialize(number)
     @number = number
-    @speed = 0
-    @route = nil
-    @current_position = 0
     @wagons = []
+    @speed = 0
     validate!
     register_instance
-    self
-  end
-
-  def self.find(number)
-    instances.detect{ |i| i.number == number }
   end
 
   def each_wagon
@@ -48,79 +29,101 @@ class Train
   end
 
   def add_wagon(wagon)
-    return can_not_add_wagon + wagon_already_added if @wagons.include?(wagon)
-    return can_not_add_wagon + wagon_has_incompatible_type unless self.type == wagon.type
-    return can_not_add_wagon + speed_is_not_zero unless self.speed.zero?
+    return Train.wagon_already_added if @wagons.include?(wagon)
+    return Train.wagon_has_incompatible_type unless type == wagon.type
+    return Train.speed_is_not_zero unless speed.zero?
+
     @wagons << wagon
     self
   end
 
   def remove_wagon(wagon_number)
-    return can_not_remove_wagon + speed_is_not_zero unless self.speed.zero?
-    wagon = @wagons.detect { |w| w.number == wagon_number }
-    return can_not_remove_wagon + wagon_not_in_list unless @wagons.include?(wagon)
-    @wagons.delete(wagon)
+    return Train.speed_is_not_zero unless speed.zero?
+
+    wagon = wagons.detect { |w| w.number == wagon_number }
+    return Train.wagon_not_in_list unless wagons.include?(wagon)
+
+    wagons.delete(wagon)
     self
   end
 
   def accept(route)
-    self.route = route
-    self.current_station = self.route.stations.first
-    self.current_position = 0
-    self.route.stations.first.receive_train(self)
+    @route = route
+    @current_station = route.stations.first
+    @current_position = 0
+    @route.stations.first.receive_train(self)
     self
   end
 
   def go_forward
-    return there_is_no_route + add_route unless self.route
-    return at_last_station unless self.next_station
-    return speed_is_zero if self.speed.zero?
-    self.current_station.dispatch_train(self)
-    self.current_station = self.next_station.receive_train(self)
-    self.current_position = route.stations.index(@current_station)
+    res = can_go_forward?
+    return res if res.is_a?(String)
+
+    current_station.dispatch_train(self)
+    next_station.receive_train(self)
+    @current_station = next_station
+    @current_position = route.stations.index(current_station)
     self
   end
 
+  def can_go_forward?
+    return Train.there_is_no_route + Train.add_route unless route
+    return Train.at_last_station unless next_station
+    return Train.speed_is_zero if speed.zero?
+
+    true
+  end
+
   def go_backward
-    return there_is_no_route + add_route unless self.route
-    return at_first_station unless self.previous_station
-    return speed_is_zero if self.speed.zero?
-    self.current_station = self.previous_station
+    return Train.there_is_no_route + Train.add_route unless route
+    return Train.at_first_station unless previous_station
+    return Train.speed_is_zero if speed.zero?
+
+    @current_station = previous_station
     self
   end
 
   def get_station(position)
-    return there_is_no_route + add_route unless self.route
-    case position
-    when 'next'
-      self.next_station ? self.next_station : no_next_station
-    when 'previous'
-      self.previous_station ? self.previous_station : no_previous_station
-    when 'current'
-      self.current_station
-    end
+    return Train.there_is_no_route + Train.add_route unless route
+    return next_station || Train.no_next_station if position == 'next'
+    return previous_station || Train.no_previous_station if
+      position == 'previous'
+
+    current_station
   end
 
   def info
-    "Поезд ##{self.number}:
-       Тип: #{self.type}
-       Маршрут: #{self.route ? self.route.info : 'Пока не задан.'}
-       Текущая станция: #{self.current_station ? self.current_station.info : 'Пока не задана.'}
-       Вагоны(#{@wagons.size}):
-        #{@wagons.any? ? @wagons.map(&:info).join("\n\t") : "Вагонов нет. Только локомотив."}"
+    "Поезд ##{number}:
+       Тип: #{type}
+       Маршрут: #{route ? route.info : 'Пока не задан.'}
+       Текущая станция: #{current_station_info}
+       Вагоны(#{wagons.size}):
+        #{wagons_info}"
+  end
+
+  def wagons_info
+    return 'Вагонов нет. Только локомотив.' if wagons.empty?
+
+    wagons.map(&:info).join("\n\t")
+  end
+
+  def current_station_info
+    current_station ? current_station.info : 'Пока не задана.'
   end
 
   def previous_station
-    return if self.current_position.zero?
-    route.stations[self.current_position - 1]
+    return if current_position.zero?
+
+    route.stations[current_position - 1]
   end
 
   def next_station
-    return if self.current_position == self.route.stations.size - 1
-    route.stations[self.current_position + 1]
+    return if current_position == route.stations.size - 1
+
+    route.stations[current_position + 1]
   end
 
   def current_position
-    route.stations.index(self.current_station)
+    route.stations.index(current_station)
   end
 end

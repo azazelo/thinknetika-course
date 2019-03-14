@@ -1,11 +1,13 @@
-require_relative 'maker'
 require_relative 'validations'
+require_relative 'maker'
 require_relative 'messages'
+require_relative 'instance_counter'
 
 class Wagon
   include Validations
   include Maker
-  include Messages::Wagon
+  include Messages
+  include InstanceCounter
 
   attr_reader :number, :type, :volume, :loaded
   validates :number, presence: true
@@ -16,20 +18,23 @@ class Wagon
     @number = number
     @volume = volume
     @loaded = 0
+    register_instance
     validate!
   end
 
   def push(qty = 1)
-    return you_trying_to_push_more_than_wagon_can_carry if qty > volume
-    return there_is_no_more_free_space_to_push if free_space.zero?
-    return free_space_is_too_small_for_this_qty if qty > free_space
+    return Wagon.you_trying_to_push_more_than_wagon_can_carry if qty > volume
+    return Wagon.there_is_no_more_free_space_to_push if free_space.zero?
+    return Wagon.free_space_is_too_small_for_this_qty if qty > free_space
+
     @loaded += qty
     self
   end
 
   def pull(qty = 1)
-    return there_is_nothing_to_pull if loaded.zero?
-    return you_trying_to_pull_more_then_loaded if loaded < qty
+    return Wagon.there_is_nothing_to_pull if loaded.zero?
+    return Wagon.you_trying_to_pull_more_then_loaded if loaded < qty
+
     @loaded -= qty
     self
   end
@@ -39,6 +44,12 @@ class Wagon
   end
 
   def info
-    "##{@number}, #{type}, всего: #{volume}, занято: #{loaded}, свободно: #{free_space}"
+    [
+      "##{@number}",
+      type.to_s,
+      "всего: #{volume}",
+      "занято: #{loaded}",
+      "свободно: #{free_space}."
+    ].join(', ')
   end
 end

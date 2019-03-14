@@ -1,13 +1,7 @@
-require_relative "messages"
-require_relative "instance_counter"
-require_relative "validations"
-
-class Station
-  include InstanceCounter
-  include Validations
-  include Messages::Station
+require_relative 'base'
+class Station < Base
   attr_reader :name, :trains
-  validates :name, :presence => true, :format => /[\S]+/i, :uniqueness => true
+  validates :name, presence: true, format: /[\S]+/i, uniqueness: true
 
   def initialize(name)
     @name = name
@@ -25,21 +19,23 @@ class Station
   end
 
   def receive_train(train)
-    return train_already_on_station if self.trains.include?(train)
-    self.trains << train
-    puts "#{train.info} ARRIVED to station #{self.info}"
+    return Station.train_already_on_station if trains.include?(train)
+
+    trains << train
+    puts "#{train.info} ARRIVED to station #{info}"
     self
   end
 
   def dispatch_train(train)
-    return no_such_train_on_station unless self.trains.include?(train)
+    return Station.no_such_train_on_station unless trains.include?(train)
+
     @trains.delete(train)
-    puts "#{train.info} DEPARTED from station #{self.info}"
+    puts "#{train.info} DEPARTED from station #{info}"
     self
   end
 
   def display
-    puts self.info
+    puts info
     puts 'Поезда на станции станции:'
     puts train_list(@trains)
   end
@@ -55,7 +51,6 @@ class Station
   end
 
   def info
-    "ст.#{self.name}"
+    "ст.#{name}"
   end
-
 end
