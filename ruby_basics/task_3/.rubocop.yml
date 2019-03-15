@@ -1,0 +1,7 @@
+Style/Documentation:
+  Exclude:
+    - '**/*'
+
+Style/AsciiComments:
+  Exclude:
+    - '**/*'
