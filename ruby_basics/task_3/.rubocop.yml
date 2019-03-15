@@ -1,7 +1,5 @@
 Style/Documentation:
-  Exclude:
-    - '**/*'
+  Enabled: false
 
 Style/AsciiComments:
-  Exclude:
-    - '**/*'
+  Enabled: false
