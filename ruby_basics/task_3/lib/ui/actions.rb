@@ -153,8 +153,8 @@ module UI
       def create_route(opts = {})
         loop do
           route =
-            Route.new(input_route_name(opts[:stations]),
-                      first_station = choose_first_station(opts),
+            Route.new(input_route_name(opts),
+                      first_station = choose_first_station(opts[:stations]),
                       choose_last_station(opts[:stations] - [first_station]))
           next unless route
 

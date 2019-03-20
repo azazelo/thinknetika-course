@@ -1,14 +1,11 @@
-require_relative 'validations'
-require_relative 'maker'
-require_relative 'messages'
-require_relative 'instance_counter'
+require_relative 'base'
 
-class Wagon
-  include Validations
-  include Maker
-  include Messages
-  include InstanceCounter
+class Wood
+end
 
+class Wagon < Base
+  attr_accessor_with_history :rooms, :weels
+  strong_attr_accessor :doors, Wood
   attr_reader :number, :type, :volume, :loaded
   validates :number, presence: true
   validates :type,   presence: true, inclusion: Types::ALL

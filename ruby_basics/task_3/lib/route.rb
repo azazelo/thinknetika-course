@@ -1,11 +1,6 @@
-require_relative 'messages'
-require_relative 'instance_counter'
-require_relative 'validations'
+require_relative 'base'
 
-class Route
-  include Validations
-  include InstanceCounter
-  include Messages
+class Route < Base
   attr_accessor :name
   attr_reader :stations
   validates :name, presence: true, uniqueness: true
