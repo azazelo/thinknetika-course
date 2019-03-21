@@ -1,4 +1,4 @@
-h4 Interactive Black Jack game
+h1.Interactive Black Jack game
 
 Human vs Machine
 
