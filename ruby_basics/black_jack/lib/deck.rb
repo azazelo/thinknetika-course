@@ -3,10 +3,17 @@ class Deck
 
   def initialize
     @suits = %w[hearts clubs diamonds spades]
-    @cards = []
+    @cards = create_cards
+  end
+
+  private
+
+  def create_cards
+    res = []
     @suits.each do |suit|
-      @cards += card_faces.map { |face| "#{face}-#{suit}" }.flatten
+      res += card_faces.map { |face| "#{face}-#{suit}" }.flatten
     end
+    res
   end
 
   def card_faces
