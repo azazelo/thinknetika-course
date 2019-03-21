@@ -7,8 +7,4 @@ describe Deck do
     expect(deck.cards.size).to eq(52)
     puts deck.cards
   end
-
-  it 'should create suits' do
-    expect(deck.suits.size).to eq(4)
-  end
 end
