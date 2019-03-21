@@ -5,6 +5,7 @@ describe Deck do
 
   it 'should create new Deck with 52 cards' do
     expect(deck.cards.size).to eq(52)
+    puts deck.cards
   end
 
   it 'should create suits' do

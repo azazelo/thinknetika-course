@@ -9,22 +9,26 @@ class Deck
   private
 
   def create_cards
-    res = []
+    res = {}
     @suits.each do |suit|
-      res += card_faces.map { |face| "#{face}-#{suit}" }.flatten
+      card_faces.each { |face, value| res["#{face}-#{suit}"] = value }
     end
     res
   end
 
   def card_faces
-    non_trumps + trumps
+    non_trumps.merge(trumps).merge(ace)
   end
 
   def non_trumps
-    (2..10).to_a
+    (2..10).to_a.map { |i| [i, i] }.to_h
   end
 
   def trumps
-    %w[ace king queen jack]
+    %w[jack queen king].map { |face| [face, 10] }.to_h
+  end
+  
+  def ace
+    { 'ace' => [1, 11] }
   end
 end
