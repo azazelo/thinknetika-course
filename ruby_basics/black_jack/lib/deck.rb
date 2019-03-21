@@ -27,7 +27,7 @@ class Deck
   def trumps
     %w[jack queen king].map { |face| [face, 10] }.to_h
   end
-  
+
   def ace
     { 'ace' => [1, 11] }
   end
