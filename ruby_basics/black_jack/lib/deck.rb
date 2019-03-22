@@ -1,40 +1,23 @@
-class Deck
-  attr_reader :cards
+module Deck
+  NONTRUMPS   = (2..10).to_a.map { |i| [i, i] }.to_h
+  TRUMP_VALUE = 10
+  TRUMPS      = %w[J Q K].map { |face| [face, TRUMP_VALUE] }.to_h
+  ACE         = { 'A' => proc { |score| score <= 10 ? 11 : 1 } }.freeze
+  RANKS       = NONTRUMPS.merge(TRUMPS).merge(ACE)
 
-  def initialize
-    @suits = suits
-    @cards = create_cards
-  end
-
-  private
+  HEARTS     = "\u2665".freeze
+  DIAMONDS   = "\u2666".freeze
+  CLUBS      = "\u2663".freeze
+  SPADES     = "\u2660".freeze
+  SUIT_NAMES = %w[hearts diamonds clubs spades].freeze
+  SUIT_VIEWS = [HEARTS, DIAMONDS, CLUBS, SPADES].freeze
+  SUITS      = SUIT_NAMES.zip(SUIT_VIEWS).to_h
 
   def create_cards
     res = {}
-    @suits.each do |suit|
-      card_faces.each { |face, value| res["#{face}#{suit}"] = value }
+    SUIT_NAMES.each do |name|
+      RANKS.each { |rank, value| CARDS["#{rank}-#{name}"] = value }
     end
     res
-  end
-
-  def suits
-#    %w[hearts clubs diamonds spades]
-#    ["\u2661", "\u2662", "\u2667", "\u2664"].map{ |s| s.encode('utf-8') }
-    ["\u2665", "\u2666", "\u2663", "\u2660"].map{ |s| s.encode('utf-8') }
-  end
-
-  def card_faces
-    non_trumps.merge(trumps).merge(ace)
-  end
-
-  def non_trumps
-    (2..10).to_a.map { |i| [i, i] }.to_h
-  end
-
-  def trumps
-    %w[J Q K].map { |face| [face, 10] }.to_h
-  end
-
-  def ace
-    { 'A' => [1, 11] }
   end
 end
