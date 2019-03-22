@@ -12,11 +12,11 @@ module Deck
   SUIT_NAMES = %w[hearts diamonds clubs spades].freeze
   SUIT_VIEWS = [HEARTS, DIAMONDS, CLUBS, SPADES].freeze
   SUITS      = SUIT_NAMES.zip(SUIT_VIEWS).to_h
-
-  def create_cards
+  
+  def self.cards
     res = {}
     SUIT_NAMES.each do |name|
-      RANKS.each { |rank, value| CARDS["#{rank}-#{name}"] = value }
+      RANKS.each { |rank, value| res["#{rank}-#{name}"] = value }
     end
     res
   end
