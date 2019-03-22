@@ -9,8 +9,8 @@ module Deck
   DIAMONDS   = "\u2666".freeze
   CLUBS      = "\u2663".freeze
   SPADES     = "\u2660".freeze
-  SUIT_NAMES = %w[hearts diamonds clubs spades].freeze
   SUIT_VIEWS = [HEARTS, DIAMONDS, CLUBS, SPADES].freeze
+  SUIT_NAMES = %w[hearts diamonds clubs spades].freeze
   SUITS      = SUIT_NAMES.zip(SUIT_VIEWS).to_h
   
   def self.cards
