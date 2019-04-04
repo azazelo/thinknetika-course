@@ -2,7 +2,7 @@ module Deck
   NONTRUMPS   = (2..10).to_a.map { |i| [i, i] }.to_h
   TRUMP_VALUE = 10
   TRUMPS      = %w[J Q K].map { |face| [face, TRUMP_VALUE] }.to_h
-  ACE         = { 'A' => proc { |score| score <= 10 ? 11 : 1 } }.freeze
+  ACE         = { 'A' => proc { |sum| sum <= 10 ? 11 : 1 } }.freeze
   RANKS       = NONTRUMPS.merge(TRUMPS).merge(ACE)
 
   HEARTS     = "\u2665".freeze
@@ -10,7 +10,7 @@ module Deck
   CLUBS      = "\u2663".freeze
   SPADES     = "\u2660".freeze
   SUIT_VIEWS = [HEARTS, DIAMONDS, CLUBS, SPADES].freeze
-  SUIT_NAMES = %w[hearts diamonds clubs spades].freeze
+  SUIT_NAMES = %w[HEARTS DIAMONDS CLUBS SPADES].freeze
   SUITS      = SUIT_NAMES.zip(SUIT_VIEWS).to_h
   
   def self.cards
@@ -19,5 +19,13 @@ module Deck
       RANKS.each { |rank, value| res["#{rank}-#{name}"] = value }
     end
     res
+  end
+  
+  def self.score(cards)
+    sum = 0
+    cards.each do |card|
+      sum += card[1].respond_to?(:call) ? card[1].call(sum) : card[1]
+    end
+    sum
   end
 end
