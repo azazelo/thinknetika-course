@@ -1,61 +1,71 @@
 require_relative 'players/human'
-require_relative 'players/computer'
+require_relative 'players/diller'
 require_relative 'deck'
 
 def main
-  cards_array = Deck.cards.to_a
-  ai = Computer.new
+  cards = Deck.cards.to_a
+  diller = Diller.new
   human = Human.new(take_name)
-  # start
+  bank = 20
+  human.bank -= 10
+  diller.bank -= 10
   round_number = 0
   while 1 do
     round_number += 1
     puts '------------'
     puts "Game round: #{round_number}"
     if round_number == 1
-      cards_array -= human.take_card(2, cards_array)
-      cards_array -= ai   .take_card(2, cards_array)
+      cards -= human.take(2, cards)
+      cards -= diller.take(2, cards)
     end
-    human.show_hand
-    ai.show_hand(false)
+    human .show_hand
+    diller.show_hand(front: false)
     menu
     case gets.strip
     when '1' 
-      cards_array -= ai   .take_card(1, cards_array)
-      next
+      diller_turn(diller, cards)
     when '2' 
-      cards_array -= human.take_card(1, cards_array)
-      cards_array -= ai   .take_card(1, cards_array)
+      cards -= human.take(1, cards)
+      diller_turn(diller, cards)
     when '3' 
-      open_cards(ai, human)
+      open_cards(diller, human)
       return
     end
-    puts 'Left cards: ' + cards_array.size.to_s
+    if human.hand.size + diller.hand.size == 6
+      open_cards(diller, human) 
+      return
+    end
+    puts 'Left cards: ' + cards.size.to_s
   end
 end
 
+def diller_turn(diller, cards)
+  cards -= diller.take(1, cards) if Deck.score(diller.hand) < 17
+end
+
 def menu
-  puts '1 - Пасс'
-  puts '2 - Взять еще'
-  puts '3 - Открываемся'
+  puts '1 - Пасс.'
+  puts '2 - Взять карту.'
+  puts '3 - Открываемся.'
+  print ': '
 end
 
-def open_cards(ai, human)
+def open_cards(diller, human)
   human.show_hand
-  ai.show_hand
-  puts 'Winner is ' + winner(human, ai)
+  diller.show_hand
+  puts 'Winner is ' + winner(human, diller)
 end
 
-def winner(human, ai)
+def winner(human, diller)
   human_sum = Deck.score(human.hand)
-  ai_sum = Deck.score(ai.hand)
-  return 'Nobody'   if human_sum >  21 && ai_sum >  21
-  return 'Computer' if human_sum >  21 && ai_sum <= 21
-  return 'Human'    if human_sum <= 21 && ai_sum >  21
-  if human_sum <= 21 && ai_sum <= 21
-    return 'Human'    if human_sum >  ai_sum
-    return 'Nobody'   if human_sum == ai_sum
-    return 'Computer' if human_sum <  ai_sum
+  diller_sum = Deck.score(diller.hand)
+  return 'Nobody' if human_sum >  21 && diller_sum >  21
+  return 'Diller' if human_sum >  21 && diller_sum <= 21
+  return 'Human'  if human_sum <= 21 && diller_sum >  21
+  if human_sum <= 21 && diller_sum <= 21
+    return 'Human'  if human_sum >  diller_sum
+    return 'Nobody' if human_sum == diller_sum
+    return 'Diller' if human_sum <  diller_sum
   end
 end
 
