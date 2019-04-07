@@ -1,6 +1,6 @@
 class Diller < Player
   def initialize
-    @name = 'Diller John'
+    @name = 'Diller'
     super
   end
 end

@@ -13,7 +13,7 @@ module Deck
   SUIT_VIEWS = [HEARTS, DIAMONDS, CLUBS, SPADES].freeze
   SUIT_NAMES = %w[HEARTS DIAMONDS CLUBS SPADES].freeze
   SUITS      = SUIT_NAMES.zip(SUIT_VIEWS).to_h
-  
+
   def self.cards
     res = {}
     SUIT_NAMES.each do |name|
@@ -21,8 +21,8 @@ module Deck
     end
     res
   end
-  
-  def self.score(cards_array)
+
+  def self.calc(cards_array)
     sum = 0
     cards_array.each do |card|
       sum += card[1].respond_to?(:call) ? card[1].call(sum) : card[1]

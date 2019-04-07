@@ -2,30 +2,32 @@ class Player
   attr_accessor :bank, :hand
   attr_reader :name
 
-  def initialize(name = nil)
+  def initialize(_name = nil)
     @bank = 100
     @hand = []
   end
-  
+
   def take(qty, cards)
-    @hand += roll(qty, cards)
+    @hand += [cards[rand(cards.size)]]
+    @hand += [cards[rand(cards.size)]] if qty != 1
+    @hand
   end
-  
-  def show_hand(opts = { front: true })
-    if opts[:front]
-      display_hand ||= @hand.map do |card| 
-        card[0].split('-').first + Deck.const_get(card[0].split('-').last)
-      end.join(' ')
-      display_score = Deck.score(@hand)
-    else
-      display_hand ||= "* " * @hand.size
-      display_score = "*"
-    end
-    puts "#{self.name}'s hand: #{display_hand}, Sum: #{display_score}" 
+
+  def show(opts = { front: true })
+    puts "#{name}'s hand: #{hand_info(opts)}, #{sum_info(opts)}, Bank: #{@bank}"
   end
-  
-  def roll(qty, cards)
-    return [cards[rand(cards.size)]] if qty == 1
-    [cards[rand(cards.size)], cards[rand(cards.size)]]
+
+  def hand_info(opts)
+    return '* ' * @hand.size unless opts[:front]
+
+    @hand.map do |card|
+      card[0].split('-').first + Deck.const_get(card[0].split('-').last)
+    end.join(' ')
+  end
+
+  def sum_info(opts)
+    return '*' unless opts[:front]
+
+    "Sum: #{Deck.calc(@hand)}"
   end
 end
