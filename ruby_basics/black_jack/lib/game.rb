@@ -5,11 +5,10 @@ require_relative 'deck'
 def game(opts)
   empty_hands(opts)
   (1..10).each do |round_number|
-    puts "----\nGame round: #{round_number}, Bank: 20."
+    IO.round_title(round_number)
     res = roll(round_number, opts)
+    IO.left_cards_message(opts)
     break if res == 'return'
-
-    puts 'Left cards: ' + opts[:cards].size.to_s
   end
   'return'
 end
@@ -21,9 +20,8 @@ end
 
 def roll(round_number, opts)
   first_roll(opts) if round_number == 1
-  opts[:human].show
-  opts[:diller].show(front: false)
-  next_roll(choose_option, opts)
+  IO.show_hands(opts.merge(diller_face: 'no'))
+  next_roll(IO.choose_option, opts)
 end
 
 def first_roll(opts)
@@ -51,26 +49,17 @@ end
 
 def init
   {
-    human:  Human.new(take_name),
+    human:  Human.new(IO.take_name),
     diller: Diller.new,
-    cards:  Deck.cards.to_a
+    cards:  Deck.cards
   }
-end
-
-def choose_option
-  puts '1 - Пас.'
-  puts '2 - Взять карту.'
-  puts '3 - Открываемся.'
-  print ': '
-  gets.strip
 end
 
 def all_open(opts)
   hero = winner(Deck.calc(opts[:human].hand), Deck.calc(opts[:diller].hand))
   calc_bank(hero, opts)
-  opts[:human] .show
-  opts[:diller].show
-  puts "#{hero} won!"
+  IO.show_hands(opts)
+  IO.show_hero(hero)
   'return'
 end
 
@@ -104,9 +93,4 @@ end
 
 def human_won(h_sum, d_sum)
   (h_sum <= 21 && d_sum > 21) || (h_sum <= 21 && d_sum <= 21 && h_sum > d_sum)
-end
-
-def take_name
-  print 'Представьтесь пожалуйста: '
-  gets.strip
 end

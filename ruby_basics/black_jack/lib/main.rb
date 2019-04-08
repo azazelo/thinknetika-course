@@ -1,13 +1,12 @@
 require_relative 'game'
+require_relative 'io'
 
 def main
-  puts '----- Black Jack -----'
+  IO.init_title
   opts = init
   loop do
     game(opts)
-    print 'Please choose: 1 - To repeat game, 2 - To exit. : '
-    command = gets.strip
-    puts 'Thanks for the game! Bye!' if command == '2'
+    command = IO.repeat_or_exit_handle
     break if command == '2'
   end
 end
