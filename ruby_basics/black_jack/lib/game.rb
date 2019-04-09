@@ -19,32 +19,36 @@ def empty_hands(opts)
 end
 
 def roll(round_number, opts)
-  first_roll(opts) if round_number == 1
-  IO.show_hands(opts.merge(diller_face: 'no'))
-  next_roll(IO.choose_option, opts)
-end
-
-def first_roll(opts)
-  opts[:cards] -= opts[:human] .take(2, opts[:cards])
-  opts[:cards] -= opts[:diller].take(2, opts[:cards])
+  first_roll(round_number, opts) if round_number == 1
   opts[:human].bank -= 10
   opts[:diller].bank -= 10
+  IO.show_hands(opts.merge(diller_face: 'no'))
+  next_roll(round_number, IO.choose_option, opts)
 end
 
-def next_roll(command, opts)
-  human_turn(opts)  if command == '2'
-  diller_turn(opts) if %w[1 2].include?(command)
+def first_roll(round_number, opts)
+  human_turn(round_number, opts)
+  diller_turn(round_number, opts)
+end
+
+def next_roll(round_number, command, opts)
+  human_turn(round_number, opts)  if command == '2'
+  diller_turn(round_number, opts) if %w[1 2].include?(command)
   all_open(opts) if command == '3' ||
                     [opts[:human].hand.size, opts[:diller].hand.size] == [3, 3]
 end
 
-def human_turn(opts)
-  opts[:cards] -= opts[:human].take(1, opts[:cards])
+def human_turn(round_number, opts)
+  qty = round_number == 1 ? 2 : 1
+  opts[:cards] -= opts[:human].take(qty, opts[:cards])
 end
 
-def diller_turn(opts)
-  opts[:cards] -= opts[:diller].take(1, opts[:cards]) if
-    Deck.calc(opts[:diller].hand) < 17
+def diller_turn(round_number, opts)
+  if round_number == 1
+    opts[:cards] -= opts[:diller].take(2, opts[:cards])
+  elsif Deck.calc(opts[:diller].hand) < 17
+    opts[:cards] -= opts[:diller].take(1, opts[:cards]) 
+  end
 end
 
 def init
