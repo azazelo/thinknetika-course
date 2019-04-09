@@ -17,13 +17,11 @@ module Deck
   SUITS      = SUIT_NAMES.zip(SUIT_VIEWS).to_h
 
   def self.cards
-    res = []
-    SUITS.each do |suit_name, suit_view|
-      RANKS.each do |rank, value|
-        res << Card.new(suit_name, suit_view, rank, value)
+    SUITS.map do |suit_name, suit_view|
+      RANKS.map do |rank, value|
+        Card.new(suit_name, suit_view, rank, value)
       end
-    end
-    res
+    end.flatten
   end
 
   def self.calc(cards_array)
