@@ -29,9 +29,9 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 
-en:
-  hello: 'Hello world'
-  title: 'Title: Test-Guru'
-  info: 'Application for course of Thinknetica "Ruby on Rails Basics".'
-  description: 'Desctiption: Quiz Application. Create and issue tickets with questions.'
-  author: 'Author: Andrey Eremeev.'
+ru:
+  hello: "Привет, Мир!"
+  title: 'Заголовок: Test-Guru'
+  info: 'Приложение для курса Thinknetica "Основы Ruby on Rails"'
+  description: 'Описание: Приложение для опросов. Создание и выдача билетов с вопросами.'
+  author: 'Автор: Андрей Еремеев.'
